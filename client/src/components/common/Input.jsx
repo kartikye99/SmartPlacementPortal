@@ -17,25 +17,17 @@ export const Input = ({
   ...props
 }) => {
   const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+  const helpId = inputId ? `${inputId}-help` : undefined;
 
   return (
     <div className="w-full space-y-1.5 text-left">
       {label && (
-        <label
-          htmlFor={inputId}
-          className="block text-xs font-semibold uppercase tracking-wider text-slate-400"
-        >
-          {label} {required && <span className="text-rose-400">*</span>}
+        <label htmlFor={inputId} className="block text-[12px] font-semibold" style={{ color: 'var(--theme-text)' }}>
+          {label} {required && <span style={{ color: 'var(--danger)' }}>*</span>}
         </label>
       )}
-
-      <div className="relative rounded-xl shadow-sm">
-        {leftIcon && (
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            {leftIcon}
-          </div>
-        )}
-
+      <div className="relative">
+        {leftIcon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" style={{ color: 'var(--theme-text-muted)' }}>{leftIcon}</div>}
         <input
           id={inputId}
           type={type}
@@ -44,27 +36,23 @@ export const Input = ({
           placeholder={placeholder}
           disabled={disabled}
           required={required}
-          className={`w-full rounded-xl bg-slate-900/90 border ${
-            error
-              ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20'
-              : 'border-slate-800 focus:border-indigo-500 focus:ring-indigo-500/20'
-          } text-slate-100 placeholder-slate-500 text-sm px-4 py-2.5 transition-all duration-200 focus:outline-none focus:ring-4 disabled:opacity-50 disabled:bg-slate-950 ${
-            leftIcon ? 'pl-10' : ''
-          } ${rightIcon ? 'pr-10' : ''} ${className}`}
+          aria-invalid={Boolean(error)}
+          aria-describedby={(error || helperText) ? helpId : undefined}
+          className={`w-full rounded-md border text-[13px] px-3.5 py-2.5 focus:outline-none focus:ring-2 disabled:opacity-60 ${leftIcon ? 'pl-10' : ''} ${rightIcon ? 'pr-10' : ''} ${className}`}
+          style={{
+            background: 'var(--theme-input-bg)',
+            borderColor: error ? 'var(--danger)' : 'var(--theme-input-border)',
+            color: 'var(--theme-text)',
+            '--tw-ring-color': error ? 'color-mix(in srgb, var(--danger) 18%, transparent)' : 'color-mix(in srgb, var(--theme-accent) 18%, transparent)',
+          }}
           {...props}
         />
-
-        {rightIcon && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-            {rightIcon}
-          </div>
-        )}
+        {rightIcon && <div className="absolute inset-y-0 right-0 pr-3 flex items-center">{rightIcon}</div>}
       </div>
-
       {error ? (
-        <p className="text-xs text-rose-400 font-medium tracking-wide">{error}</p>
+        <p id={helpId} className="text-[11px] font-medium" style={{ color: 'var(--danger)' }}>{error}</p>
       ) : helperText ? (
-        <p className="text-xs text-slate-400 font-normal">{helperText}</p>
+        <p id={helpId} className="text-[11px]" style={{ color: 'var(--theme-text-muted)' }}>{helperText}</p>
       ) : null}
     </div>
   );

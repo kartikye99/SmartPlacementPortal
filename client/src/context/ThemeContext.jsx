@@ -1,98 +1,48 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeContext = createContext();
 
 export const themes = [
   {
-    id: 'dark',
-    name: 'Obsidian Dark',
-    icon: '🌙',
-    description: 'Executive deep obsidian black with clean white typography & crisp slate borders',
-    preview: {
-      bg: '#09090b',
-      surface: '#121215',
-      primary: '#ffffff',
-      secondary: '#27272a',
-      accent: '#a1a1aa',
-    },
-    assets: {
-      background: '',
-      hero: '',
-      heroVector: '',
-      auth: '',
-      prepare: '',
-      interview: '',
-      admin: '',
-      generic: '',
-    },
+    id: 'light',
+    name: 'Institutional Light',
+    icon: '☀️',
+    description: 'Clear university workspace for everyday administration',
+    preview: { bg: '#f4f6f8', surface: '#ffffff', primary: '#0c5964', secondary: '#d7e0e5', accent: '#174b6b' },
+    assets: {},
   },
   {
-    id: 'light',
-    name: 'Academic Light',
-    icon: '☀️',
-    description: 'Prestigious clean white campus aesthetic with rich dark typography & slate outlines',
-    preview: {
-      bg: '#ffffff',
-      surface: '#f8fafc',
-      primary: '#09090b',
-      secondary: '#e4e4e7',
-      accent: '#52525b',
-    },
-    assets: {
-      background: '',
-      hero: '',
-      heroVector: '',
-      auth: '',
-      prepare: '',
-      interview: '',
-      admin: '',
-      generic: '',
-    },
+    id: 'dark',
+    name: 'Institutional Dark',
+    icon: '🌙',
+    description: 'Low-light university workspace with restrained contrast',
+    preview: { bg: '#0e1921', surface: '#142630', primary: '#67c4c0', secondary: '#2a424e', accent: '#72a8c2' },
+    assets: {},
   },
 ];
 
 export const ThemeProvider = ({ children }) => {
   const [currentTheme, setCurrentTheme] = useState(() => {
     const saved = localStorage.getItem('spp-theme');
-    return saved === 'light' ? 'light' : 'dark';
+    return saved === 'dark' ? 'dark' : 'light';
   });
 
   useEffect(() => {
     const root = document.documentElement;
-    // Clean old theme classes
-    root.classList.remove(
-      'theme-midnight',
-      'theme-love',
-      'theme-space',
-      'theme-jungle',
-      'theme-ocean',
-      'theme-sunset',
-      'theme-sakura',
-      'theme-cyber',
-      'theme-dark',
-      'theme-light'
-    );
+    root.className = root.className
+      .split(' ')
+      .filter((className) => !className.startsWith('theme-'))
+      .join(' ');
     root.classList.add(`theme-${currentTheme}`);
-    root.setAttribute('data-theme', currentTheme);
+    root.dataset.theme = currentTheme;
     localStorage.setItem('spp-theme', currentTheme);
   }, [currentTheme]);
 
-  const activeTheme = themes.find((t) => t.id === currentTheme) || themes[0];
-
-  const toggleTheme = () => {
-    setCurrentTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  const activeTheme = themes.find((theme) => theme.id === currentTheme) || themes[0];
+  const toggleTheme = () => setCurrentTheme((theme) => (theme === 'dark' ? 'light' : 'dark'));
 
   return (
-    <ThemeContext.Provider
-      value={{
-        currentTheme,
-        setCurrentTheme,
-        toggleTheme,
-        activeTheme,
-        themes,
-      }}
-    >
+    <ThemeContext.Provider value={{ currentTheme, setCurrentTheme, toggleTheme, activeTheme, themes }}>
       {children}
     </ThemeContext.Provider>
   );
