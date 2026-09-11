@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
@@ -13,6 +14,7 @@ const resumeRoutes = require('./routes/resumeRoutes');
 const interviewRoutes = require('./routes/interviewRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const { attachGeminiLiveServer } = require('./services/geminiLiveService');
 
 dotenv.config();
 
@@ -109,7 +111,11 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
 
-app.listen(PORT, '0.0.0.0', () => {
+attachGeminiLiveServer(server);
+
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`[Smart Placement Portal] Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log('[Gemini Live] WebSocket relay available at /api/interviews/live');
 });
