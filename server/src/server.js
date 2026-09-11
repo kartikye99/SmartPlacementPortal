@@ -119,3 +119,5 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`[Smart Placement Portal] Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   console.log('[Gemini Live] WebSocket relay available at /api/interviews/live');
 });
+
+//all good
