@@ -1,0 +1,272 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <radialGradient id="sakura-bg" cx="50%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#2d0b1d"/>
+      <stop offset="55%" stop-color="#190610"/>
+      <stop offset="100%" stop-color="#0f030a"/>
+    </radialGradient>
+    <radialGradient id="sakura-glow" cx="75%" cy="30%" r="45%">
+      <stop offset="0%" stop-color="#f472b6" stop-opacity="0.32"/>
+      <stop offset="50%" stop-color="#ec4899" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#0f030a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sakura-orchid" cx="25%" cy="75%" r="50%">
+      <stop offset="0%" stop-color="#d946ef" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="#831843" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#0f030a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blossom-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sakura-bg)"/>
+
+  <circle cx="1400" cy="350" r="500" fill="url(#sakura-glow)" filter="url(#blossom-blur)"/>
+  <circle cx="450" cy="800" r="450" fill="url(#sakura-orchid)" filter="url(#blossom-blur)"/>
+
+  <path d="M2000,100 C1700,180 1500,120 1350,220 C1250,280 1150,260 1050,320" fill="none" stroke="rgba(244, 114, 182, 0.35)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M1500,160 C1420,240 1360,320 1280,360" fill="none" stroke="rgba(244, 114, 182, 0.25)" stroke-width="2"/>
+  <path d="M1200,270 C1140,320 1110,400 1020,420" fill="none" stroke="rgba(244, 114, 182, 0.2)" stroke-width="1.5"/>
+
+  
+    <g transform="translate(100, 80) rotate(0) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(132.7, 98.5) rotate(27) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(165.4, 117) rotate(54) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(198.10000000000002, 135.5) rotate(81) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(230.8, 154) rotate(108) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(263.5, 172.5) rotate(135) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(296.20000000000005, 191) rotate(162) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(328.90000000000003, 209.5) rotate(189) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(361.6, 228) rotate(216) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(394.3, 246.5) rotate(243) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(427, 265) rotate(270) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(459.70000000000005, 283.5) rotate(297) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(492.40000000000003, 302) rotate(324) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(525.1, 320.5) rotate(351) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(557.8000000000001, 339) rotate(18) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(590.5, 357.5) rotate(45) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(623.2, 376) rotate(72) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(655.9000000000001, 394.5) rotate(99) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(688.6, 413) rotate(126) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(721.3000000000001, 431.5) rotate(153) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(754, 450) rotate(180) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(786.7, 468.5) rotate(207) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(819.4000000000001, 487) rotate(234) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(852.1, 505.5) rotate(261) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(884.8000000000001, 524) rotate(288) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(917.5000000000001, 542.5) rotate(315) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(950.2, 561) rotate(342) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(982.9000000000001, 579.5) rotate(9) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1015.6000000000001, 598) rotate(36) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1048.3000000000002, 616.5) rotate(63) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1081, 635) rotate(90) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1113.7, 653.5) rotate(117) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1146.4, 672) rotate(144) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1179.1000000000001, 690.5) rotate(171) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1211.8000000000002, 709) rotate(198) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1244.5, 727.5) rotate(225) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1277.2, 746) rotate(252) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1309.9, 764.5) rotate(279) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1342.6000000000001, 783) rotate(306) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1375.3000000000002, 801.5) rotate(333) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1408, 820) rotate(0) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1440.7, 838.5) rotate(27) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1473.4, 857) rotate(54) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1506.1000000000001, 875.5) rotate(81) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1538.8000000000002, 894) rotate(108) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1571.5000000000002, 912.5) rotate(135) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1604.2, 931) rotate(162) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1636.9, 949.5) rotate(189) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1669.6000000000001, 968) rotate(216) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1702.3000000000002, 986.5) rotate(243) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1735.0000000000002, 1005) rotate(270) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1767.7, 1023.5) rotate(297) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1800.4, 1042) rotate(324) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1833.1000000000001, 1060.5) rotate(351) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1865.8000000000002, 1079) rotate(18) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(1898.5000000000002, 17.5) rotate(45) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.4" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(11.200000000000273, 36) rotate(72) scale(0.8)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.52" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(43.90000000000009, 54.5) rotate(99) scale(1.1)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.64" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(76.60000000000014, 73) rotate(126) scale(1.4)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.76" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+  
+    <g transform="translate(109.30000000000018, 91.5) rotate(153) scale(1.7)">
+      <path d="M0,0 C12,-15 28,-5 15,15 C5,28 -12,18 0,0 Z" fill="#fbcfe8" opacity="0.88" stroke="rgba(244, 114, 182, 0.4)" stroke-width="0.5"/>
+    </g>
+</svg>
