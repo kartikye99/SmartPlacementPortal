@@ -15,7 +15,7 @@ export const Button = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#070a12] disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-xl';
+    'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-xl hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]';
 
   const sizes = {
     sm: 'text-xs px-3 py-1.5 gap-1.5',
@@ -25,29 +25,29 @@ export const Button = ({
 
   const variants = {
     primary:
-      'btn-vibrant-primary focus:ring-violet-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     cyan:
-      'btn-vibrant-cyan focus:ring-cyan-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     ai:
-      'btn-ai-prep focus:ring-fuchsia-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     jobs:
-      'btn-jobs focus:ring-indigo-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     resume:
-      'btn-resume focus:ring-orange-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     interview:
-      'btn-interview focus:ring-pink-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     progress:
-      'btn-progress focus:ring-emerald-500',
+      'btn-vibrant-primary focus:ring-zinc-400',
     secondary:
-      'bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/15 hover:border-white/25 shadow-sm backdrop-blur-md active:scale-[0.98] focus:ring-white/40',
+      'btn-secondary focus:ring-zinc-400',
     outline:
-      'border border-white/20 text-slate-100 hover:bg-white/10 hover:border-white/35 shadow-sm active:scale-[0.98] focus:ring-white/30',
+      'border border-[var(--theme-border)] text-[var(--theme-text)] hover:bg-[var(--theme-surface-hover)] focus:ring-zinc-400 shadow-sm',
     ghost:
-      'text-slate-200 hover:bg-white/10 hover:text-white active:scale-[0.98] focus:ring-white/20',
+      'text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-surface-hover)] focus:ring-zinc-400',
     danger:
-      'bg-gradient-to-r from-rose-500 via-pink-600 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white shadow-lg shadow-rose-500/30 active:scale-[0.98] focus:ring-rose-500',
+      'bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500',
     success:
-      'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/30 active:scale-[0.98] focus:ring-emerald-500',
+      'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm focus:ring-emerald-500',
   };
 
   return (

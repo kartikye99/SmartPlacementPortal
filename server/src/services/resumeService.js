@@ -249,7 +249,7 @@ Respond strictly in valid JSON matching this schema:
 `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.6-flash',
         contents: prompt,
         config: { responseMimeType: 'application/json' },
       });
@@ -259,7 +259,7 @@ Respond strictly in valid JSON matching this schema:
         ...parsed,
         company: job.company?.name || 'Company',
         jobTitle: job.title || 'Role',
-        engine: 'Gemini 2.5 Flash',
+        engine: 'Gemini 3.6 Flash',
       };
     } catch (err) {
       console.warn(`[ResumeService] Gemini call failed (${err.message}). Using deterministic ATS engine.`);

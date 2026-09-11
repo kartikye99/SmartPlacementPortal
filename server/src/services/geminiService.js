@@ -220,7 +220,7 @@ const analyzeJobDescription = async (job) => {
   }
 
   try {
-    console.log(`[AI JD Intelligence] Calling Gemini API (gemini-2.5-flash) for ${job.company?.name} — ${job.title}...`);
+    console.log(`[AI JD Intelligence] Calling Gemini API (gemini-3.6-flash) for ${job.company?.name} — ${job.title}...`);
     const ai = new GoogleGenAI({ apiKey });
 
     const prompt = `You are a Principal Campus Placement Officer & Senior Tech Interviewer. Analyze this Job Description (JD) and produce structured preparation intelligence for students.
@@ -271,7 +271,7 @@ Respond strictly in valid JSON format matching this exact schema:
 }`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.6-flash',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
@@ -282,7 +282,7 @@ Respond strictly in valid JSON format matching this exact schema:
     return {
       ...parsed,
       analyzedAt: new Date().toISOString(),
-      engine: 'Google Gemini 2.5 Flash',
+      engine: 'Google Gemini 3.6 Flash',
     };
   } catch (error) {
     console.warn(`[AI JD Intelligence Warning] Gemini API call failed (${error.message}). Using deterministic fallback.`);

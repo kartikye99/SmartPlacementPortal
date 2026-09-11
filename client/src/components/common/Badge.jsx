@@ -13,53 +13,74 @@ export const Badge = ({
   };
 
   const variants = {
-    neutral: 'bg-slate-800/80 text-slate-300 border-slate-700/70',
-    success: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/35 shadow-sm shadow-emerald-500/15',
-    warning: 'bg-amber-500/15 text-amber-300 border-amber-500/35 shadow-sm shadow-amber-500/15',
-    danger: 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-sm shadow-rose-500/15',
-    coral: 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-sm shadow-rose-500/15',
-    info: 'bg-violet-500/15 text-violet-300 border-violet-500/35 shadow-sm shadow-violet-500/15',
-    violet: 'bg-violet-500/15 text-violet-300 border-violet-500/35 shadow-sm shadow-violet-500/15',
-    cyan: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/35 shadow-sm shadow-cyan-500/15',
-    purple: 'bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/35 shadow-sm shadow-fuchsia-500/15',
-    magenta: 'bg-pink-500/15 text-pink-300 border-pink-500/35 shadow-sm shadow-pink-500/15',
-    emerald: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/35 shadow-sm shadow-emerald-500/15',
-    amber: 'bg-amber-500/15 text-amber-300 border-amber-500/35 shadow-sm shadow-amber-500/15',
-    rose: 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-sm shadow-rose-500/15',
-    // Product Area Mappings
-    jobs: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/35 shadow-sm shadow-indigo-500/15',
-    ai: 'bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/35 shadow-sm shadow-fuchsia-500/15',
-    resume: 'bg-orange-500/15 text-orange-300 border-orange-500/35 shadow-sm shadow-orange-500/15',
-    interview: 'bg-pink-500/15 text-pink-300 border-pink-500/35 shadow-sm shadow-pink-500/15',
-    progress: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/35 shadow-sm shadow-emerald-500/15',
-    deadline: 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-sm shadow-rose-500/15',
+    neutral:
+      'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border-zinc-400/20 dark:border-zinc-700/60',
+    primary:
+      'bg-zinc-900/10 dark:bg-white/10 text-zinc-900 dark:text-white border-zinc-900/20 dark:border-white/20 font-bold',
+    success:
+      'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25',
+    warning:
+      'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/25',
+    danger:
+      'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/25',
+    coral:
+      'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/25',
+    info:
+      'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/25',
+    violet:
+      'bg-zinc-500/10 text-zinc-800 dark:text-zinc-200 border-zinc-400/25 dark:border-zinc-600/30',
+    cyan:
+      'bg-slate-500/10 text-slate-800 dark:text-slate-200 border-slate-400/25',
+    purple:
+      'bg-zinc-500/10 text-zinc-800 dark:text-zinc-200 border-zinc-400/25',
+    magenta:
+      'bg-zinc-500/10 text-zinc-800 dark:text-zinc-200 border-zinc-400/25',
+    emerald:
+      'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25',
+    amber:
+      'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/25',
+    rose:
+      'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/25',
+    jobs:
+      'bg-slate-500/10 text-slate-800 dark:text-slate-200 border-slate-400/25',
+    ai:
+      'bg-zinc-500/10 text-zinc-800 dark:text-zinc-200 border-zinc-400/25',
+    resume:
+      'bg-zinc-500/10 text-zinc-800 dark:text-zinc-200 border-zinc-400/25',
+    interview:
+      'bg-zinc-500/10 text-zinc-800 dark:text-zinc-200 border-zinc-400/25',
+    progress:
+      'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25',
+    deadline:
+      'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/25',
   };
 
   const dotColors = {
-    neutral: 'bg-slate-400',
-    success: 'bg-emerald-400 animate-pulse',
-    warning: 'bg-amber-400 animate-pulse',
-    danger: 'bg-rose-400 animate-pulse',
-    coral: 'bg-rose-400 animate-pulse',
-    info: 'bg-violet-400 animate-pulse',
-    violet: 'bg-violet-400 animate-pulse',
-    cyan: 'bg-cyan-400 animate-pulse',
-    purple: 'bg-fuchsia-400 animate-pulse',
-    magenta: 'bg-pink-400 animate-pulse',
-    emerald: 'bg-emerald-400 animate-pulse',
-    amber: 'bg-amber-400 animate-pulse',
-    rose: 'bg-rose-400 animate-pulse',
-    jobs: 'bg-indigo-400 animate-pulse',
-    ai: 'bg-fuchsia-400 animate-pulse',
-    resume: 'bg-orange-400 animate-pulse',
-    interview: 'bg-pink-400 animate-pulse',
-    progress: 'bg-emerald-400 animate-pulse',
-    deadline: 'bg-rose-400 animate-pulse',
+    neutral: 'bg-zinc-400',
+    primary: 'bg-zinc-900 dark:bg-white',
+    success: 'bg-emerald-500 animate-pulse',
+    warning: 'bg-amber-500 animate-pulse',
+    danger: 'bg-rose-500 animate-pulse',
+    coral: 'bg-rose-500 animate-pulse',
+    info: 'bg-blue-500 animate-pulse',
+    violet: 'bg-zinc-400',
+    cyan: 'bg-slate-400',
+    purple: 'bg-zinc-400',
+    magenta: 'bg-zinc-400',
+    emerald: 'bg-emerald-500 animate-pulse',
+    amber: 'bg-amber-500 animate-pulse',
+    rose: 'bg-rose-500 animate-pulse',
+    jobs: 'bg-slate-400',
+    ai: 'bg-zinc-400',
+    resume: 'bg-zinc-400',
+    interview: 'bg-zinc-400',
+    progress: 'bg-emerald-500 animate-pulse',
+    deadline: 'bg-rose-500 animate-pulse',
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border backdrop-blur-md ${
+      className={`inline-flex items-center gap-1.5 rounded-full border backdrop-blur-md transition-colors ${
         variants[variant] || variants.neutral
       } ${sizes[size]} ${className}`}
     >

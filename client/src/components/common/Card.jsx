@@ -4,34 +4,23 @@ export const Card = ({
   children,
   className = '',
   hover = false,
+  hover3d = true,
   elevated = false,
-  accent = false,
-  area = 'default', // 'jobs' | 'ai' | 'resume' | 'interview' | 'progress' | 'deadline' | 'admin' | 'default'
   ...props
 }) => {
-  const surfaceClass = accent 
-    ? 'glass-panel-accent' 
-    : elevated 
-      ? 'glass-panel-elevated' 
-      : 'glass-panel';
-
-  const areaClassMap = {
-    jobs: 'card-area-jobs',
-    ai: 'card-area-ai',
-    resume: 'card-area-resume',
-    interview: 'card-area-interview',
-    progress: 'card-area-progress',
-    deadline: 'card-area-deadline',
-    admin: 'card-area-admin',
-    default: '',
-  };
-
-  const areaClass = areaClassMap[area] || '';
-  const hoverClass = hover ? 'card-interactive cursor-pointer' : '';
+  const surfaceClass = elevated ? 'glass-panel-elevated' : 'glass-panel';
+  const hoverClass = hover
+    ? hover3d
+      ? 'card-3d-hover cursor-pointer'
+      : 'hover:-translate-y-1 hover:shadow-lg transition-all duration-200 cursor-pointer'
+    : '';
 
   return (
     <div
-      className={`${surfaceClass} ${areaClass} rounded-2xl p-6 ${hoverClass} ${className}`}
+      className={`${surfaceClass} rounded-2xl p-6 ${hoverClass} ${className}`}
+      style={{
+        color: 'var(--theme-text)',
+      }}
       {...props}
     >
       {children}
@@ -44,11 +33,25 @@ export const CardHeader = ({ children, className = '' }) => {
 };
 
 export const CardTitle = ({ children, className = '' }) => {
-  return <h3 className={`text-lg font-bold text-white tracking-tight ${className}`}>{children}</h3>;
+  return (
+    <h3
+      className={`text-lg font-bold tracking-tight font-display ${className}`}
+      style={{ color: 'var(--theme-text)' }}
+    >
+      {children}
+    </h3>
+  );
 };
 
 export const CardDescription = ({ children, className = '' }) => {
-  return <p className={`text-xs text-slate-400 mt-1 leading-relaxed ${className}`}>{children}</p>;
+  return (
+    <p
+      className={`text-xs mt-1 leading-relaxed ${className}`}
+      style={{ color: 'var(--theme-text-muted)' }}
+    >
+      {children}
+    </p>
+  );
 };
 
 export const CardContent = ({ children, className = '' }) => {
@@ -56,5 +59,12 @@ export const CardContent = ({ children, className = '' }) => {
 };
 
 export const CardFooter = ({ children, className = '' }) => {
-  return <div className={`mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between ${className}`}>{children}</div>;
+  return (
+    <div
+      className={`mt-6 pt-4 flex items-center justify-between ${className}`}
+      style={{ borderTop: '1px solid var(--theme-border)' }}
+    >
+      {children}
+    </div>
+  );
 };

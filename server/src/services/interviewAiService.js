@@ -77,7 +77,7 @@ Do not evaluate or score right now; speak directly to the candidate as the inter
 `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.6-flash',
         contents: prompt,
       });
 
@@ -216,7 +216,7 @@ Respond strictly in valid JSON matching this schema:
 `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.6-flash',
         contents: prompt,
         config: { responseMimeType: 'application/json' },
       });
