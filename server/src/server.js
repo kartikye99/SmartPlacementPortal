@@ -65,7 +65,22 @@ app.use('/api/auth/register', authLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health & Info Endpoint
+// Health & Root Status Endpoints (For Render & Vercel health monitoring)
+app.get('/', (req, res) => {
+  const status = getStoreStatus();
+  res.json({
+    status: 'online',
+    message: 'Smart Placement Portal API Service',
+    database: status.isConnected ? 'MongoDB Atlas Connected' : 'Fallback Store Active',
+    version: '1.0.0',
+    endpoints: '/api/health',
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.get('/api/health', (req, res) => {
   const status = getStoreStatus();
   res.json({
@@ -93,6 +108,6 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`[Smart Placement Portal] Server running in ${process.env.NODE_ENV || 'development'} mode on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[Smart Placement Portal] Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });

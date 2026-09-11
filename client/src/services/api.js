@@ -1,6 +1,9 @@
 // Lightweight API client with automatic JWT token injection, query caching, and error handling
 
-const API_BASE = '/api';
+// Configurable base URL: In development or via proxy, default to '/api'.
+// In production on Vercel, points to Render backend URL e.g. 'https://smartplacementportal.onrender.com/api'
+const RAW_BASE = import.meta.env.VITE_API_URL || '/api';
+const API_BASE = RAW_BASE.replace(/\/+$/, '');
 
 // In-memory response cache (similar to React Query client cache)
 const apiCache = new Map();
