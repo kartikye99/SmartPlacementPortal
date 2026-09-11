@@ -14,6 +14,35 @@ const mockInterviews = {};
  */
 const generateMockId = () => 'intv_' + Math.random().toString(36).substr(2, 9);
 
+const isOwnedBy = (interview, userId) => (
+  interview && userId && interview.user?.toString() === userId.toString()
+);
+
+const getOwnedInterview = async (id, userId) => {
+  const { isMockStoreActive } = getStoreStatus();
+  if (isMockStoreActive) {
+    const interview = mockInterviews[id];
+    return isOwnedBy(interview, userId) ? interview : null;
+  }
+  return Interview.findOne({ _id: id, user: userId });
+};
+
+const appendLiveTranscript = async (id, userId, turns) => {
+  const { isMockStoreActive } = getStoreStatus();
+  const interview = await getOwnedInterview(id, userId);
+  if (!interview) throw new Error('Interview session not found');
+  if (interview.status !== 'in_progress') throw new Error('Interview session has concluded');
+
+  interview.transcript.push(...turns);
+  if (isMockStoreActive) {
+    interview.updatedAt = new Date();
+    mockInterviews[id] = interview;
+  } else {
+    await interview.save();
+  }
+  return interview;
+};
+
 /**
  * @desc    Start a new mock/live interview session
  * @route   POST /api/interviews/start
@@ -109,18 +138,9 @@ const submitAnswer = async (req, res) => {
     }
 
     const { isMockStoreActive } = getStoreStatus();
-    let interview;
-
-    if (isMockStoreActive) {
-      interview = mockInterviews[id];
-      if (!interview) {
-        return res.status(404).json({ message: 'Interview session not found' });
-      }
-    } else {
-      interview = await Interview.findById(id);
-      if (!interview) {
-        return res.status(404).json({ message: 'Interview session not found' });
-      }
+    const interview = await getOwnedInterview(id, req.user?._id);
+    if (!interview) {
+      return res.status(404).json({ message: 'Interview session not found' });
     }
 
     if (interview.status === 'completed') {
@@ -180,18 +200,9 @@ const endInterview = async (req, res) => {
     const { durationSeconds = 0 } = req.body;
 
     const { isMockStoreActive } = getStoreStatus();
-    let interview;
-
-    if (isMockStoreActive) {
-      interview = mockInterviews[id];
-      if (!interview) {
-        return res.status(404).json({ message: 'Interview session not found' });
-      }
-    } else {
-      interview = await Interview.findById(id);
-      if (!interview) {
-        return res.status(404).json({ message: 'Interview session not found' });
-      }
+    const interview = await getOwnedInterview(id, req.user?._id);
+    if (!interview) {
+      return res.status(404).json({ message: 'Interview session not found' });
     }
 
     interview.status = 'completed';
@@ -258,14 +269,7 @@ const getInterviewHistory = async (req, res) => {
 const getInterviewById = async (req, res) => {
   try {
     const { id } = req.params;
-    const { isMockStoreActive } = getStoreStatus();
-
-    let interview;
-    if (isMockStoreActive) {
-      interview = mockInterviews[id];
-    } else {
-      interview = await Interview.findById(id);
-    }
+    const interview = await getOwnedInterview(id, req.user?._id);
 
     if (!interview) {
       return res.status(404).json({ message: 'Interview not found' });
@@ -398,4 +402,6 @@ module.exports = {
   getInterviewHistory,
   getInterviewById,
   getImprovementTracker,
+  getOwnedInterview,
+  appendLiveTranscript,
 };

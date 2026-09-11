@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Mic,
   MicOff,
@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { getVoiceProvider } from '../../services/voice/voiceProvider';
+import { GeminiLiveVoiceProvider } from '../../services/voice/geminiLiveProvider';
 import { AudioRecorder } from '../../services/voice/audioRecorder';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
@@ -33,7 +34,6 @@ import { Badge } from '../../components/common/Badge';
 export default function MockInterviewArena() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Core Session State
   const [interview, setInterview] = useState(null);
@@ -49,6 +49,9 @@ export default function MockInterviewArena() {
   const [transcript, setTranscript] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [activeSpeechInterim, setActiveSpeechInterim] = useState('');
+  const [liveVoiceAvailable, setLiveVoiceAvailable] = useState(false);
+  const [liveVoiceState, setLiveVoiceState] = useState('idle');
+  const [liveVoiceError, setLiveVoiceError] = useState('');
 
   // Audio Recording with Consent
   const [recordingConsent, setRecordingConsent] = useState(true);
@@ -68,6 +71,7 @@ export default function MockInterviewArena() {
 
   // Voice & Recorder References
   const voiceProviderRef = useRef(null);
+  const liveVoiceProviderRef = useRef(null);
   const audioRecorderRef = useRef(null);
   const transcriptEndRef = useRef(null);
 
@@ -94,7 +98,7 @@ export default function MockInterviewArena() {
     return () => clearInterval(interval);
   }, [timerActive]);
 
-  // Initialize Voice Provider and Audio Recorder
+  // Initialize browser fallback voice and local consented recorder
   useEffect(() => {
     voiceProviderRef.current = getVoiceProvider('webspeech');
     audioRecorderRef.current = new AudioRecorder();
@@ -102,6 +106,7 @@ export default function MockInterviewArena() {
     return () => {
       voiceProviderRef.current?.stopSpeaking();
       voiceProviderRef.current?.stopListening();
+      liveVoiceProviderRef.current?.close();
       audioRecorderRef.current?.cleanup();
     };
   }, []);
@@ -131,11 +136,7 @@ export default function MockInterviewArena() {
               });
             }
 
-            // Speak initial question if in voice mode
-            const firstAiMsg = (data.interview.transcript || []).find((m) => m.role === 'ai');
-            if (firstAiMsg && (data.interview.mode || 'voice') === 'voice') {
-              speakAiMessage(firstAiMsg.message);
-            }
+            // Voice mode connects to Gemini Live in the dedicated effect below.
           }
         }
       } catch (err) {
@@ -148,7 +149,70 @@ export default function MockInterviewArena() {
     fetchInterview();
   }, [id]);
 
-  // AI TTS Speak Handler
+  // Connect voice-mode sessions to the server-side Gemini Live relay.
+  useEffect(() => {
+    if (!interview || interview.status === 'completed' || mode !== 'voice') return undefined;
+
+    let disposed = false;
+    let fallbackStarted = false;
+    const provider = new GeminiLiveVoiceProvider();
+    liveVoiceProviderRef.current = provider;
+
+    const startBrowserFallback = (message) => {
+      if (disposed || fallbackStarted) return;
+      fallbackStarted = true;
+      setLiveVoiceAvailable(false);
+      setLiveVoiceError(message || 'Gemini Live is unavailable; browser voice mode is active.');
+      const opening = interview.transcript?.find((item) => item.role === 'ai')?.message;
+      if (opening) {
+        setAiSpeaking(true);
+        voiceProviderRef.current?.speak(opening, {
+          onStart: () => setAiSpeaking(true),
+          onEnd: () => setAiSpeaking(false),
+          onError: () => setAiSpeaking(false),
+        });
+      }
+    };
+
+    provider.connect(interview._id || id, {
+      onStatus: (state) => {
+        if (disposed) return;
+        setLiveVoiceState(state);
+        setAiThinking(state === 'thinking');
+      },
+      onListeningStart: () => { if (!disposed) setUserSpeaking(true); },
+      onListeningEnd: () => { if (!disposed) setUserSpeaking(false); },
+      onSpeakingStart: () => { if (!disposed) setAiSpeaking(true); },
+      onSpeakingEnd: () => { if (!disposed) setAiSpeaking(false); },
+      onInputTranscript: (text) => { if (!disposed) setActiveSpeechInterim(text); },
+      onOutputTranscript: () => { if (!disposed) setAiThinking(false); },
+      onTranscript: (nextTranscript) => {
+        if (disposed) return;
+        setTranscript(nextTranscript || []);
+        setActiveSpeechInterim('');
+        setUserInput('');
+        setAiThinking(false);
+      },
+      onTurnComplete: () => { if (!disposed) setAiThinking(false); },
+      onInterrupted: () => { if (!disposed) setAiSpeaking(false); },
+      onError: (liveError) => startBrowserFallback(liveError.message),
+      onClose: () => {
+        if (!disposed) setLiveVoiceAvailable(false);
+      },
+    }).then(() => {
+      if (disposed) return;
+      setLiveVoiceAvailable(true);
+      setLiveVoiceError('');
+    }).catch((liveError) => startBrowserFallback(liveError.message));
+
+    return () => {
+      disposed = true;
+      provider.close();
+      if (liveVoiceProviderRef.current === provider) liveVoiceProviderRef.current = null;
+    };
+  }, [id, interview, mode]);
+
+  // Browser TTS fallback when Gemini Live is unavailable
   const speakAiMessage = (text) => {
     if (voiceMuted || !voiceProviderRef.current) return;
     setAiSpeaking(true);
@@ -159,50 +223,81 @@ export default function MockInterviewArena() {
     });
   };
 
-  // Toggle Voice Input / Listen
-  const toggleSpeechRecognition = () => {
+  // Toggle Gemini Live microphone, falling back to browser speech recognition.
+  const toggleSpeechRecognition = async () => {
+    if (liveVoiceState === 'connecting' || liveVoiceState === 'connected') return;
+
+    if (liveVoiceAvailable && liveVoiceProviderRef.current) {
+      try {
+        if (userSpeaking) {
+          liveVoiceProviderRef.current.stopListening();
+          setUserSpeaking(false);
+        } else {
+          voiceProviderRef.current?.stopSpeaking();
+          setAiSpeaking(false);
+          setActiveSpeechInterim('');
+          await liveVoiceProviderRef.current.startListening();
+        }
+      } catch (liveError) {
+        setUserSpeaking(false);
+        setLiveVoiceError(liveError.message || 'Microphone access failed.');
+      }
+      return;
+    }
+
     if (userSpeaking) {
-      // Stop listening and finalize
       voiceProviderRef.current?.stopListening();
       setUserSpeaking(false);
       if (activeSpeechInterim.trim()) {
-        setUserInput((prev) => (prev ? `${prev} ${activeSpeechInterim.trim()}` : activeSpeechInterim.trim()));
+        setUserInput((previous) => previous ? `${previous} ${activeSpeechInterim.trim()}` : activeSpeechInterim.trim());
         setActiveSpeechInterim('');
       }
-    } else {
-      // Stop AI speech if active
-      voiceProviderRef.current?.stopSpeaking();
-      setAiSpeaking(false);
-
-      voiceProviderRef.current?.listen({
-        onStart: () => {
-          setUserSpeaking(true);
-          setActiveSpeechInterim('');
-        },
-        onResult: ({ transcript: interim, isFinal }) => {
-          setActiveSpeechInterim(interim);
-          if (isFinal) {
-            setUserInput((prev) => (prev ? `${prev} ${interim.trim()}` : interim.trim()));
-            setActiveSpeechInterim('');
-          }
-        },
-        onError: (err) => {
-          console.warn('Speech Recognition Error:', err);
-          setUserSpeaking(false);
-        },
-        onEnd: () => {
-          setUserSpeaking(false);
-        },
-      });
+      return;
     }
+
+    voiceProviderRef.current?.stopSpeaking();
+    setAiSpeaking(false);
+    voiceProviderRef.current?.listen({
+      onStart: () => {
+        setUserSpeaking(true);
+        setActiveSpeechInterim('');
+      },
+      onResult: ({ transcript: interim, isFinal }) => {
+        setActiveSpeechInterim(interim);
+        if (isFinal) {
+          setUserInput((previous) => previous ? `${previous} ${interim.trim()}` : interim.trim());
+          setActiveSpeechInterim('');
+        }
+      },
+      onError: (speechError) => {
+        console.warn('Speech Recognition Error:', speechError);
+        setUserSpeaking(false);
+      },
+      onEnd: () => setUserSpeaking(false),
+    });
   };
 
   // Submit Answer to Server
   const handleSendAnswer = async () => {
     const finalAnswer = (userInput + ' ' + activeSpeechInterim).trim();
-    if (!finalAnswer) return;
+    if (!finalAnswer || aiThinking) return;
 
-    // Stop listening & speaking
+    if (mode === 'voice' && liveVoiceAvailable && liveVoiceProviderRef.current) {
+      if (userSpeaking) liveVoiceProviderRef.current.stopListening();
+      setUserSpeaking(false);
+      setActiveSpeechInterim('');
+      setUserInput('');
+      setAiThinking(true);
+      setTranscript((previous) => [...previous, { role: 'user', message: finalAnswer, timestamp: new Date() }]);
+      const sent = liveVoiceProviderRef.current.sendText(finalAnswer);
+      if (!sent) {
+        setAiThinking(false);
+        setLiveVoiceError('The live connection is not ready. Please try again.');
+      }
+      return;
+    }
+
+    // Browser voice/text fallback uses the existing HTTP turn endpoint.
     voiceProviderRef.current?.stopListening();
     voiceProviderRef.current?.stopSpeaking();
     setUserSpeaking(false);
@@ -241,6 +336,10 @@ export default function MockInterviewArena() {
 
     voiceProviderRef.current?.stopSpeaking();
     voiceProviderRef.current?.stopListening();
+    if (liveVoiceProviderRef.current) {
+      await liveVoiceProviderRef.current.close({ waitForTurn: true });
+      liveVoiceProviderRef.current = null;
+    }
     setAiSpeaking(false);
     setUserSpeaking(false);
 
@@ -316,7 +415,13 @@ export default function MockInterviewArena() {
               <h1 className="text-lg font-bold text-white">{interview.company}</h1>
               <Badge variant="indigo">{interview.category}</Badge>
               <Badge variant={mode === 'voice' ? 'purple' : 'neutral'}>
-                {mode === 'voice' ? '🎙️ Realtime Voice' : '⌨️ Text Simulator'}
+                {mode === 'voice'
+                  ? liveVoiceAvailable
+                    ? 'Gemini Live Voice'
+                    : liveVoiceState === 'connecting' || liveVoiceState === 'connected'
+                      ? 'Connecting Live Voice'
+                      : 'Browser Voice Fallback'
+                  : 'Text Interview'}
               </Badge>
             </div>
             <p className="text-xs text-slate-400">{interview.jobTitle}</p>
@@ -344,8 +449,10 @@ export default function MockInterviewArena() {
           {/* Speaker Mute/Unmute */}
           <button
             onClick={() => {
-              if (!voiceMuted) voiceProviderRef.current?.stopSpeaking();
-              setVoiceMuted(!voiceMuted);
+              const nextMuted = !voiceMuted;
+              if (nextMuted) voiceProviderRef.current?.stopSpeaking();
+              liveVoiceProviderRef.current?.setMuted(nextMuted);
+              setVoiceMuted(nextMuted);
             }}
             className={`p-2 rounded-xl border transition ${
               voiceMuted
@@ -376,6 +483,13 @@ export default function MockInterviewArena() {
           </Button>
         </div>
       </div>
+
+      {mode === 'voice' && liveVoiceError && (
+        <div className="px-4 py-3 rounded-lg border text-xs flex items-center gap-2" style={{ background: 'var(--warning-soft)', borderColor: 'color-mix(in srgb, var(--warning) 28%, transparent)', color: 'var(--warning)' }}>
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{liveVoiceError} You can continue with browser voice recognition or switch to text mode.</span>
+        </div>
+      )}
 
       {/* Grid: Main Stage (Prompt ASCII Specification) + Transcript Drawer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -538,7 +652,8 @@ export default function MockInterviewArena() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={toggleSpeechRecognition}
-                    className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-xl ${
+                    disabled={liveVoiceState === 'connecting' || liveVoiceState === 'connected' || aiThinking}
+                    className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${
                       userSpeaking
                         ? 'bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-emerald-500/30 ring-4 ring-emerald-500/20'
                         : 'btn-interview ring-4 ring-pink-500/20 shadow-pink-500/30'
@@ -552,7 +667,13 @@ export default function MockInterviewArena() {
                     ) : (
                       <>
                         <Mic className="w-5 h-5 animate-pulse" />
-                        <span>🎤 Tap to Speak Answer</span>
+                        <span>
+                          {liveVoiceState === 'connecting' || liveVoiceState === 'connected'
+                            ? 'Connecting Gemini Live…'
+                            : liveVoiceAvailable
+                              ? 'Start Live Answer'
+                              : 'Speak Answer'}
+                        </span>
                       </>
                     )}
                   </button>
