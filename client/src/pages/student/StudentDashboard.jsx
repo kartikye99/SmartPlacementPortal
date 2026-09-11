@@ -125,7 +125,7 @@ export const StudentDashboard = () => {
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-fuchsia-500/15 border border-fuchsia-500/35 text-fuchsia-300 text-xs font-bold shadow-sm shadow-fuchsia-500/10">
                 <Sparkles className="w-3.5 h-3.5 text-fuchsia-400 animate-pulse" />
-                <span>AI Career Intelligence Active</span>
+                <span>Placement Services</span>
               </span>
               <span className="text-xs text-slate-400 font-medium hidden sm:inline">
                 • Batch of 2026 Campus Drive

@@ -200,13 +200,13 @@ export const AdminDashboard = () => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/15 border border-violet-500/35 text-violet-300 text-xs font-semibold mb-2.5 shadow-sm shadow-violet-500/10">
               <Sparkles className="w-3.5 h-3.5 text-violet-400 animate-pulse" />
-              <span>Admin Intelligence & Central Command</span>
+              <span>Training & Placement Office</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
-              Placement Command & <span className="text-gradient-aurora">Cohort Intelligence</span>
+              Placement Overview & <span className="text-gradient-aurora">Cohort Analytics</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Full-lifecycle university placement analytics: conversion funnels, company volumes, batch-wide weakness detection, and candidate 360 dossiers.
+              Review placement activity, recruitment outcomes, student readiness, and candidate records.
             </p>
           </div>
 
