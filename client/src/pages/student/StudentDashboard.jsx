@@ -138,9 +138,9 @@ export const StudentDashboard = () => {
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
-              {user?.department} • Roll No:{' '}
-              <span className="text-slate-100 font-semibold">{user?.rollNumber || 'CS2026-089'}</span> • Current
-              Academic CGPA: <span className="text-emerald-400 font-bold">{user?.cgpa || 8.8}</span>
+              {user?.department || 'Engineering Cohort'}
+              {user?.rollNumber ? ` • Roll No: ${user.rollNumber}` : ''}
+              {user?.cgpa ? ` • Academic CGPA: ${user.cgpa}` : ''}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-3">
@@ -188,7 +188,7 @@ export const StudentDashboard = () => {
             }}
           >
             <CircularProgress
-              value={user?.readinessScore || 90}
+              value={user?.readinessScore || 0}
               size={110}
               strokeWidth={9}
               label="Readiness"
@@ -198,12 +198,12 @@ export const StudentDashboard = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                 Placement Index
               </span>
-              <p className="text-base font-extrabold text-white">Tier-1 Qualified</p>
-              <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Eligible for 25+ LPA</span>
+              <p className="text-base font-extrabold text-white">
+                {(user?.readinessScore || 0) > 0 ? `${user.readinessScore}% Ready` : 'Initial Profile'}
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold">
+                <span>{(user?.readinessScore || 0) > 0 ? 'Diagnostic in progress' : 'Solve questions to build score'}</span>
               </div>
-              <p className="text-[11px] text-slate-400 pt-0.5">Top 12% in CS Cohort</p>
             </div>
           </div>
         </div>
@@ -396,14 +396,14 @@ export const StudentDashboard = () => {
           </div>
         </Card>
 
-        <Card area="progress" hover className="flex items-center gap-4">
+        <Card area="progress" hover className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/student/interview')}>
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-md shadow-cyan-500/15 shrink-0">
-            <CheckCircle2 className="w-6 h-6" />
+            <Mic className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Shortlisted</p>
-            <h3 className="text-2xl font-black text-white mt-0.5">{statsData?.shortlistedDrives || 0}</h3>
-            <span className="text-[11px] text-cyan-300 font-medium">Progressing in pipeline</span>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Mock Interviews</p>
+            <h3 className="text-2xl font-black text-white mt-0.5">0</h3>
+            <span className="text-[11px] text-cyan-300 font-medium">Practice sessions</span>
           </div>
         </Card>
 
@@ -594,16 +594,16 @@ export const StudentDashboard = () => {
         <div className="lg:col-span-4 space-y-6">
           <div>
             <div className="flex items-center justify-between mb-1">
-              <h3 className="text-lg font-bold text-white tracking-tight">Upcoming Rounds</h3>
-              <Badge variant="deadline" size="sm">Confirmed</Badge>
+              <h3 className="text-lg font-bold text-white tracking-tight">Interview Rounds</h3>
+              <Badge variant="deadline" size="sm">Timeline</Badge>
             </div>
-            <p className="text-xs text-slate-400 mb-4">Confirmed assessment slots</p>
+            <p className="text-xs text-slate-400 mb-4">Assessment & interview schedules</p>
             <div className="space-y-3">
               {schedules.length === 0 ? (
                 <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800/80 text-center">
                   <Clock className="w-8 h-8 text-slate-500 mx-auto mb-2 opacity-50" />
-                  <p className="text-xs font-semibold text-slate-300">No Interview Rounds Scheduled</p>
-                  <p className="text-[11px] text-slate-400 mt-1">Confirmed interview and assessment slots will appear here once shortlisted.</p>
+                  <p className="text-xs font-semibold text-slate-300">No Rounds Scheduled</p>
+                  <p className="text-[11px] text-slate-400 mt-1">Confirmed interview and assessment slots will appear here when scheduled by the placement cell.</p>
                 </div>
               ) : (
                 schedules.map((schedule) => (

@@ -31,11 +31,11 @@ const userSchema = new mongoose.Schema(
     },
     rollNumber: {
       type: String,
-      default: 'CS2026-089',
+      default: '',
     },
     cgpa: {
       type: Number,
-      default: 8.8,
+      default: 0,
       min: 0,
       max: 10,
     },

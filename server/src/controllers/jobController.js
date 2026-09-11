@@ -274,6 +274,8 @@ const updateJob = async (req, res) => {
         message: 'Job drive updated successfully',
         job,
       });
+    }
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -315,6 +317,8 @@ const deleteJob = async (req, res) => {
       }
       mockJobs.splice(index, 1);
       return res.json({ success: true, message: 'Job drive deleted successfully' });
+    }
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -365,6 +369,10 @@ const togglePublishJob = async (req, res) => {
         message: `Job drive is now ${nextStatus}`,
         job,
       });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Job not found' });
     }
 
     const job = await Job.findById(id);
