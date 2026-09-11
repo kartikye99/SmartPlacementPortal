@@ -508,13 +508,9 @@ export default function MockInterviewArena() {
             └───────────────────────────────┘
            ============================================================ */}
         <div className="lg:col-span-8 flex flex-col gap-6">
-          <div className="relative overflow-hidden rounded-3xl bg-[#090d18]/90 border border-white/10 shadow-2xl p-6 sm:p-8 flex flex-col justify-between min-h-[520px] card-area-interview">
-            {/* Ambient Background Glows in Pink & Violet */}
-            <div className="absolute -top-10 right-1/4 w-96 h-96 bg-pink-600/12 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-10 left-1/4 w-96 h-96 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
-
+          <div className="relative overflow-hidden rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl p-6 sm:p-8 flex flex-col justify-between min-h-[520px] card-area-interview">
             {/* Stage Header: AI INTERVIEWER + 4-STATE STATUS CHAIN */}
-            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
               <div className="flex items-center gap-3.5">
                 <div className="relative">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-600 via-purple-600 to-violet-600 flex items-center justify-center shadow-lg shadow-pink-500/25 ring-1 ring-white/20">
@@ -537,7 +533,7 @@ export default function MockInterviewArena() {
               </div>
 
               {/* 4-State Animated Indicator: AI Ready → Listening → Thinking → Speaking */}
-              <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#060912]/80 border border-white/10 text-xs">
+              <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs">
                 {/* State 1: Ready */}
                 <div
                   className={`px-2.5 py-1 rounded-xl flex items-center gap-1.5 transition-all ${
@@ -638,7 +634,7 @@ export default function MockInterviewArena() {
             </div>
 
             {/* Stage Footer: Glowing Microphone Trigger + Timer */}
-            <div className="relative z-10 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="relative z-10 border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               {/* Large Timer Display (18:42 style) */}
               <div className="flex items-center gap-2.5">
                 <div className="px-4 py-2 rounded-2xl bg-slate-950 border border-slate-800 text-pink-400 font-mono text-xl font-bold tracking-widest shadow-inner">
