@@ -352,3 +352,91 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--theme-text-muted);
 }
+
+/* ===================================================================
+   LIGHT MODE HIGH-CONTRAST TEXT & SURFACE OVERRIDES
+   Guarantees 100% legibility in Academic Light mode without invisible text
+   =================================================================== */
+
+.theme-light {
+  color-scheme: light;
+}
+
+/* Force dark, high-contrast text in Light Mode */
+.theme-light .text-white,
+.theme-light [class*="text-slate-100"],
+.theme-light [class*="text-slate-200"],
+.theme-light [class*="text-zinc-100"],
+.theme-light [class*="text-zinc-200"] {
+  color: #09090b !important;
+}
+
+.theme-light [class*="text-slate-300"],
+.theme-light [class*="text-slate-400"],
+.theme-light [class*="text-zinc-300"],
+.theme-light [class*="text-zinc-400"] {
+  color: #334155 !important;
+}
+
+.theme-light [class*="text-slate-500"],
+.theme-light [class*="text-zinc-500"] {
+  color: #64748b !important;
+}
+
+/* Transform dark sub-cards into clean elevated light panels */
+.theme-light .bg-slate-900,
+.theme-light .bg-slate-950,
+.theme-light .bg-zinc-900,
+.theme-light .bg-zinc-950,
+.theme-light [class*="bg-slate-900/"],
+.theme-light [class*="bg-slate-950/"],
+.theme-light [class*="bg-zinc-900/"],
+.theme-light [class*="bg-purple-950/"],
+.theme-light [class*="bg-rose-950/"],
+.theme-light [class*="bg-amber-950/"],
+.theme-light [class*="bg-indigo-950/"],
+.theme-light [class*="bg-emerald-950/"] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #09090b !important;
+}
+
+/* Clean borders in light mode */
+.theme-light .border-slate-800,
+.theme-light .border-slate-700,
+.theme-light .border-zinc-800,
+.theme-light [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Buttons: ensure white text on black/dark primary buttons */
+.theme-light .btn-vibrant-primary,
+.theme-light .btn-vibrant-primary *,
+.theme-light .btn-ai-prep,
+.theme-light .btn-ai-prep *,
+.theme-light .btn-jobs,
+.theme-light .btn-jobs *,
+.theme-light .btn-resume,
+.theme-light .btn-resume *,
+.theme-light .btn-interview,
+.theme-light .btn-interview *,
+.theme-light .btn-progress,
+.theme-light .btn-progress *,
+.theme-light .btn-vibrant-cyan,
+.theme-light .btn-vibrant-cyan * {
+  color: #ffffff !important;
+}
+
+/* Inputs, Selects, and Textareas */
+.theme-light input,
+.theme-light select,
+.theme-light textarea {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  border-color: #cbd5e1 !important;
+}
+
+.theme-light input::placeholder,
+.theme-light textarea::placeholder {
+  color: #94a3b8 !important;
+}

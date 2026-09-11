@@ -246,29 +246,33 @@ export const StudentDashboard = () => {
             </div>
             <h3 className="text-base font-bold text-white tracking-tight">What jobs can I apply for?</h3>
             <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              3 new recruitment drives match your branch and 8.8 CGPA profile threshold.
+              {drives.length > 0
+                ? `${drives.length} recruitment drive${drives.length > 1 ? 's' : ''} currently open for applications.`
+                : 'Browse campus drives matching your academic credentials and branch.'}
             </p>
 
             <div className="mt-4 space-y-2.5">
-              {[
-                { company: 'Google', role: 'Associate Software Engineer', ctc: '32 LPA', deadline: 'Sept 18' },
-                { company: 'Amazon', role: 'Applied Scientist / SDE', ctc: '44 LPA', deadline: 'Sept 22' },
-                { company: 'Microsoft', role: 'Software Engineer (Cloud)', ctc: '28 LPA', deadline: 'Sept 25' },
-              ].map((j, i) => (
-                <div
-                  key={i}
-                  className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between gap-2 text-xs"
-                >
-                  <div>
-                    <span className="font-bold text-white block">{j.company}</span>
-                    <span className="text-[11px] text-slate-400">{j.role}</span>
+              {drives.length > 0 ? (
+                drives.slice(0, 3).map((j, i) => (
+                  <div
+                    key={i}
+                    className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between gap-2 text-xs"
+                  >
+                    <div>
+                      <span className="font-bold text-white block">{j.company}</span>
+                      <span className="text-[11px] text-slate-400">{j.role}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-emerald-400 font-bold block">{j.ctc}</span>
+                      <span className="text-[10px] text-rose-300">Closes {j.deadline}</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-emerald-400 font-bold block">{j.ctc}</span>
-                    <span className="text-[10px] text-rose-300">Closes {j.deadline}</span>
-                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-center text-xs text-slate-400">
+                  No active recruitment drives posted at this moment.
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -283,7 +287,7 @@ export const StudentDashboard = () => {
           </Button>
         </Card>
 
-        {/* Card 2: What should I prepare? (Purple + Magenta) */}
+        {/* Card 2: What should I prepare? */}
         <Card area="ai" hover className="flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -299,7 +303,7 @@ export const StudentDashboard = () => {
 
             <div className="mt-4 space-y-2.5">
               <div
-                onClick={() => navigate('/student/prepare/job-003')}
+                onClick={() => navigate(drives.length > 0 ? `/student/prepare/${drives[0].id}` : '/student/practice')}
                 className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/25 hover:border-purple-500/50 cursor-pointer transition-all text-xs flex items-center justify-between"
               >
                 <div className="flex items-center gap-2.5">
@@ -307,8 +311,8 @@ export const StudentDashboard = () => {
                     1
                   </div>
                   <div>
-                    <span className="font-bold text-white block">Google SDE Prep Hub</span>
-                    <span className="text-[11px] text-purple-300">DSA, System Design & JD Match</span>
+                    <span className="font-bold text-white block">Job Description Intelligence</span>
+                    <span className="text-[11px] text-purple-300">Targeted Keyword & Tech Stack Alignment</span>
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-purple-400" />
@@ -323,8 +327,8 @@ export const StudentDashboard = () => {
                     2
                   </div>
                   <div>
-                    <span className="font-bold text-white block">Coding Arena (38 Problems)</span>
-                    <span className="text-[11px] text-slate-400">LeetCode & GFG Company Questions</span>
+                    <span className="font-bold text-white block">Algorithmic Coding Arena</span>
+                    <span className="text-[11px] text-slate-400">Curated Technical Interview Challenges</span>
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -352,14 +356,14 @@ export const StudentDashboard = () => {
             variant="ai"
             size="sm"
             className="w-full font-bold"
-            onClick={() => navigate('/student/prepare/job-003')}
+            onClick={() => navigate(drives.length > 0 ? `/student/prepare/${drives[0].id}` : '/student/practice')}
             leftIcon={<Sparkles className="w-4 h-4" />}
           >
             Launch AI Workspace
           </Button>
         </Card>
 
-        {/* Card 3: What do I need to improve? (Orange + Coral) */}
+        {/* Card 3: What do I need to improve? */}
         <Card area="deadline" hover className="flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -370,55 +374,14 @@ export const StudentDashboard = () => {
             </div>
             <h3 className="text-base font-bold text-white tracking-tight">What do I need to improve?</h3>
             <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Weakness Engine flagged 3 priority topics based on your latest mock interview analysis.
+              Weakness Engine continuously flags skill gaps based on your mock interview and test submissions.
             </p>
 
             <div className="mt-4 space-y-2.5">
-              <div className="p-3 rounded-xl bg-rose-950/25 border border-rose-500/30 text-xs flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                    <span className="font-bold text-rose-200">Dynamic Programming</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 block mt-0.5">Critical Blocker (Memoization)</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs text-rose-300 hover:bg-rose-500/20 py-1 px-2.5"
-                  onClick={() => navigate('/student/practice?topic=Dynamic%20Programming')}
-                >
-                  Practice DP
-                </Button>
-              </div>
-
-              <div className="p-3 rounded-xl bg-amber-950/20 border border-amber-500/30 text-xs flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
-                    <span className="font-bold text-amber-200">DBMS & ACID Isolation</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 block mt-0.5">Needs Improvement (Concurrency)</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs text-amber-300 hover:bg-amber-500/20 py-1 px-2.5"
-                  onClick={() => navigate('/student/prepare/job-003')}
-                >
-                  Revise Core CS
-                </Button>
-              </div>
-
-              <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-500/30 text-xs flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="font-bold text-emerald-200">OOP & Distributed Caching</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 block mt-0.5">Verified Strong Competency (88%)</span>
-                </div>
-                <Badge variant="success" size="sm">Mastered</Badge>
+              <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-center">
+                <Target className="w-6 h-6 text-slate-400 mx-auto mb-1.5 opacity-60" />
+                <p className="text-xs font-semibold text-slate-200">No Weakness Anomalies Detected</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Complete a technical mock interview or code evaluation to generate AI diagnostic benchmarks.</p>
               </div>
             </div>
           </div>
@@ -427,21 +390,15 @@ export const StudentDashboard = () => {
             variant="resume"
             size="sm"
             className="w-full font-bold"
-            onClick={() => navigate('/student/resume/analyzer')}
-            leftIcon={<Sparkles className="w-4 h-4" />}
+            onClick={() => navigate('/student/interview')}
+            leftIcon={<Mic className="w-4 h-4" />}
           >
-            Run Full ATS Gap Scan
+            Start Technical Mock
           </Button>
         </Card>
       </div>
 
-      {/* ===================================================================
-          MULTI-COLOR METRICS ROW:
-          1. Active Drives (Coral)
-          2. Applications (Violet)
-          3. Shortlisted (Cyan)
-          4. Mock Interview Score (Pink)
-          =================================================================== */}
+      {/* METRICS ROW */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card area="deadline" hover className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shadow-md shadow-rose-500/15 shrink-0">
@@ -450,7 +407,7 @@ export const StudentDashboard = () => {
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Active Drives</p>
             <h3 className="text-2xl font-black text-white mt-0.5">{drives.length}</h3>
-            <span className="text-[11px] text-rose-300 font-medium">3 closing this week</span>
+            <span className="text-[11px] text-rose-300 font-medium">{drives.length > 0 ? `${drives.length} open drives` : 'No open drives'}</span>
           </div>
         </Card>
 
@@ -461,9 +418,9 @@ export const StudentDashboard = () => {
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Applications</p>
             <h3 className="text-2xl font-black text-white mt-0.5">
-              {(statsData?.appliedDrives || 7) + Object.keys(appliedDrives).length}
+              {(statsData?.appliedDrives || 0) + Object.keys(appliedDrives).length}
             </h3>
-            <span className="text-[11px] text-indigo-300 font-medium">+1 submitted recently</span>
+            <span className="text-[11px] text-indigo-300 font-medium">Submitted applications</span>
           </div>
         </Card>
 
@@ -473,8 +430,8 @@ export const StudentDashboard = () => {
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Shortlisted</p>
-            <h3 className="text-2xl font-black text-white mt-0.5">{statsData?.shortlistedDrives || 4}</h3>
-            <span className="text-[11px] text-cyan-300 font-medium">57% conversion rate</span>
+            <h3 className="text-2xl font-black text-white mt-0.5">{statsData?.shortlistedDrives || 0}</h3>
+            <span className="text-[11px] text-cyan-300 font-medium">Progressing in pipeline</span>
           </div>
         </Card>
 
@@ -483,65 +440,75 @@ export const StudentDashboard = () => {
             <Mic className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Mock Score</p>
-            <h3 className="text-2xl font-black text-white mt-0.5">79%</h3>
-            <span className="text-[11px] text-pink-300 font-medium">+6% trajectory gain</span>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Readiness</p>
+            <h3 className="text-2xl font-black text-white mt-0.5">{user?.readinessScore || 0}%</h3>
+            <span className="text-[11px] text-pink-300 font-medium">Profile benchmark</span>
           </div>
         </Card>
       </div>
 
-      {/* ===================================================================
-          APPLICATION PIPELINE MILESTONE TRACKER
-          =================================================================== */}
+      {/* APPLICATION PIPELINE MILESTONE TRACKER */}
       <Card area="jobs">
         <CardHeader>
           <div>
             <CardTitle>Application Pipeline Tracker</CardTitle>
             <p className="text-xs text-slate-400 mt-0.5">
-              Priority recruitment drive: <span className="font-bold text-white">Google — Associate Software Engineer</span>
+              {drives.length > 0 ? (
+                <>Active drive tracking for: <span className="font-bold text-white">{drives[0].company} — {drives[0].role}</span></>
+              ) : (
+                'Track your recruitment and interview milestones in real-time.'
+              )}
             </p>
           </div>
-          <Badge variant="jobs" dot>Round 4 Active</Badge>
+          <Badge variant="jobs" dot>{statsData?.appliedDrives > 0 ? 'Pipeline Active' : 'No Active Applications'}</Badge>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-2">
-            {[
-              { stage: '1. Applied', status: 'completed', date: 'Aug 28' },
-              { stage: '2. Online Test', status: 'completed', date: 'Sept 02' },
-              { stage: '3. Tech Round 1', status: 'completed', date: 'Sept 08' },
-              { stage: '4. Tech Round 2', status: 'current', date: 'Sept 14 (Upcoming)' },
-              { stage: '5. HR & Offer', status: 'pending', date: 'TBD' },
-            ].map((step, idx) => (
-              <div
-                key={idx}
-                className={`p-3.5 rounded-2xl border transition-all ${
-                  step.status === 'completed'
-                    ? 'bg-emerald-950/25 border-emerald-500/30 text-emerald-300'
-                    : step.status === 'current'
-                    ? 'bg-gradient-to-br from-indigo-950/40 via-purple-950/30 to-fuchsia-950/20 border-indigo-500/50 text-indigo-200 ring-2 ring-indigo-500/20 shadow-lg shadow-indigo-500/10'
-                    : 'bg-slate-900/30 border-white/5 text-slate-400'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-bold">{step.stage}</span>
-                  {step.status === 'completed' ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  ) : step.status === 'current' ? (
-                    <Clock className="w-4 h-4 text-indigo-400 animate-pulse" />
-                  ) : (
-                    <div className="w-2 h-2 rounded-full bg-slate-700" />
-                  )}
+          {statsData?.appliedDrives > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-2">
+              {[
+                { stage: '1. Applied', status: 'completed', date: 'Submitted' },
+                { stage: '2. Online Test', status: statsData?.shortlistedDrives > 0 ? 'completed' : 'current', date: 'Assessment' },
+                { stage: '3. Tech Round 1', status: statsData?.pendingInterviews > 0 ? 'current' : 'pending', date: 'Technical' },
+                { stage: '4. Tech Round 2', status: 'pending', date: 'Advanced' },
+                { stage: '5. HR & Offer', status: statsData?.offersReceived > 0 ? 'completed' : 'pending', date: 'Final' },
+              ].map((step, idx) => (
+                <div
+                  key={idx}
+                  className={`p-3.5 rounded-2xl border transition-all ${
+                    step.status === 'completed'
+                      ? 'bg-emerald-950/25 border-emerald-500/30 text-emerald-300'
+                      : step.status === 'current'
+                      ? 'bg-indigo-950/40 border-indigo-500/50 text-indigo-200 ring-2 ring-indigo-500/20 shadow-lg shadow-indigo-500/10'
+                      : 'bg-slate-900/30 border-white/5 text-slate-400'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold">{step.stage}</span>
+                    {step.status === 'completed' ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    ) : step.status === 'current' ? (
+                      <Clock className="w-4 h-4 text-indigo-400 animate-pulse" />
+                    ) : (
+                      <div className="w-2 h-2 rounded-full bg-slate-700" />
+                    )}
+                  </div>
+                  <p className="text-[11px] opacity-80">{step.date}</p>
                 </div>
-                <p className="text-[11px] opacity-80">{step.date}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center rounded-2xl bg-slate-900/30 border border-white/5">
+              <FileCheck className="w-8 h-8 text-slate-500 mx-auto mb-2 opacity-50" />
+              <p className="text-xs font-semibold text-slate-300">No applications currently in progress</p>
+              <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
+                Apply to on-campus placement drives to track your application milestones from initial submission to final offer.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* ===================================================================
-          ACTIVE DRIVES & UPCOMING ROUNDS
-          =================================================================== */}
+      {/* ACTIVE DRIVES & UPCOMING ROUNDS */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Active Drives */}
         <div className="lg:col-span-8 space-y-4">
@@ -563,69 +530,82 @@ export const StudentDashboard = () => {
           </div>
 
           <div className="space-y-3">
-            {drives.map((drive) => {
-              const isApplied =
-                appliedDrives[drive.id] ||
-                drive.status === 'Applied' ||
-                drive.status === 'Shortlisted' ||
-                drive.status === 'Interviewing';
-              return (
-                <div
-                  key={drive.id}
-                  className="glass-panel card-area-jobs p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition-all"
-                >
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center font-black text-indigo-300 text-lg shrink-0">
-                      {drive.logo}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-base font-bold text-white">{drive.company}</h4>
-                        <Badge
-                          variant={isApplied ? 'success' : 'jobs'}
-                          size="sm"
-                        >
-                          {appliedDrives[drive.id] ? 'Applied' : drive.status}
-                        </Badge>
+            {drives.length === 0 ? (
+              <div className="glass-panel p-8 rounded-2xl text-center">
+                <Briefcase className="w-10 h-10 text-slate-500 mx-auto mb-3 opacity-50" />
+                <h4 className="text-sm font-bold text-white">No Active Recruitment Drives</h4>
+                <p className="text-xs text-slate-400 mt-1 mb-4">
+                  There are currently no active placement drives published. Drives published by the placement cell will appear here.
+                </p>
+                <Button variant="jobs" size="sm" onClick={() => navigate('/student/jobs')}>
+                  Explore Placement Portal
+                </Button>
+              </div>
+            ) : (
+              drives.map((drive) => {
+                const isApplied =
+                  appliedDrives[drive.id] ||
+                  drive.status === 'Applied' ||
+                  drive.status === 'Shortlisted' ||
+                  drive.status === 'Interviewing';
+                return (
+                  <div
+                    key={drive.id}
+                    className="glass-panel card-area-jobs p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition-all"
+                  >
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center font-black text-indigo-300 text-lg shrink-0">
+                        {drive.logo}
                       </div>
-                      <p className="text-xs font-semibold text-indigo-300 mt-0.5">{drive.role}</p>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-400">
-                        <span className="flex items-center gap-1 font-bold text-emerald-400">
-                          <Award className="w-3.5 h-3.5" />
-                          {drive.ctc}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                          {drive.location}
-                        </span>
-                        <span className="flex items-center gap-1 text-rose-300">
-                          <Clock className="w-3.5 h-3.5" />
-                          Deadline: {drive.deadline}
-                        </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-base font-bold text-white">{drive.company}</h4>
+                          <Badge
+                            variant={isApplied ? 'success' : 'jobs'}
+                            size="sm"
+                          >
+                            {appliedDrives[drive.id] ? 'Applied' : drive.status}
+                          </Badge>
+                        </div>
+                        <p className="text-xs font-semibold text-indigo-300 mt-0.5">{drive.role}</p>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-400">
+                          <span className="flex items-center gap-1 font-bold text-emerald-400">
+                            <Award className="w-3.5 h-3.5" />
+                            {drive.ctc}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                            {drive.location}
+                          </span>
+                          <span className="flex items-center gap-1 text-rose-300">
+                            <Clock className="w-3.5 h-3.5" />
+                            Deadline: {drive.deadline}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2 sm:self-center">
-                    <Button
-                      variant="ai"
-                      size="sm"
-                      onClick={() => navigate(`/student/prepare/${drive.id || 'job-003'}`)}
-                      leftIcon={<Sparkles className="w-3.5 h-3.5" />}
-                    >
-                      Prepare with AI
-                    </Button>
-                    <Button
-                      variant={isApplied ? 'secondary' : 'jobs'}
-                      size="sm"
-                      onClick={() => setSelectedDrive(drive)}
-                    >
-                      {isApplied ? 'View Details' : 'Apply Now'}
-                    </Button>
+                    <div className="flex items-center gap-2 sm:self-center">
+                      <Button
+                        variant="ai"
+                        size="sm"
+                        onClick={() => navigate(`/student/prepare/${drive.id}`)}
+                        leftIcon={<Sparkles className="w-3.5 h-3.5" />}
+                      >
+                        Prepare with AI
+                      </Button>
+                      <Button
+                        variant={isApplied ? 'secondary' : 'jobs'}
+                        size="sm"
+                        onClick={() => setSelectedDrive(drive)}
+                      >
+                        {isApplied ? 'View Details' : 'Apply Now'}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -638,28 +618,36 @@ export const StudentDashboard = () => {
             </div>
             <p className="text-xs text-slate-400 mb-4">Confirmed assessment slots</p>
             <div className="space-y-3">
-              {schedules.map((schedule) => (
-                <div
-                  key={schedule.id}
-                  className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2 card-area-deadline"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white">{schedule.company}</span>
-                    <Badge variant="warning" size="sm">Upcoming</Badge>
-                  </div>
-                  <p className="text-xs font-medium text-slate-300">{schedule.round}</p>
-                  <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-indigo-400" />
-                      {schedule.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-amber-400" />
-                      {schedule.time}
-                    </span>
-                  </div>
+              {schedules.length === 0 ? (
+                <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800/80 text-center">
+                  <Clock className="w-8 h-8 text-slate-500 mx-auto mb-2 opacity-50" />
+                  <p className="text-xs font-semibold text-slate-300">No Interview Rounds Scheduled</p>
+                  <p className="text-[11px] text-slate-400 mt-1">Confirmed interview and assessment slots will appear here once shortlisted.</p>
                 </div>
-              ))}
+              ) : (
+                schedules.map((schedule) => (
+                  <div
+                    key={schedule.id}
+                    className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2 card-area-deadline"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white">{schedule.company}</span>
+                      <Badge variant="warning" size="sm">Upcoming</Badge>
+                    </div>
+                    <p className="text-xs font-medium text-slate-300">{schedule.round}</p>
+                    <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-indigo-400" />
+                        {schedule.date}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-amber-400" />
+                        {schedule.time}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

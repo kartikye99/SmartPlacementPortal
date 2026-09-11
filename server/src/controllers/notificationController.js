@@ -2,41 +2,7 @@ const Notification = require('../models/Notification');
 const { getStoreStatus } = require('../config/db');
 
 // In-Memory store for evaluation
-const mockNotifications = [
-  {
-    _id: 'notif-001',
-    recipient: 'mock-student-001',
-    targetRole: 'student',
-    type: 'job_published',
-    title: 'Google Campus Drive 2026',
-    message: 'Google India has published Associate Software Engineer drive (32 LPA). Applications close Sept 18.',
-    link: '/student/jobs',
-    read: false,
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    _id: 'notif-002',
-    recipient: 'mock-student-001',
-    targetRole: 'student',
-    type: 'application_status',
-    title: 'Application Shortlisted: Google',
-    message: 'Congratulations! Your profile has been Shortlisted for Google Associate Software Engineer. Technical Round 2 scheduled.',
-    link: '/student/applications',
-    read: false,
-    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    _id: 'notif-003',
-    recipient: 'mock-student-001',
-    targetRole: 'student',
-    type: 'deadline_reminder',
-    title: 'Deadline Approaching: Microsoft Drive',
-    message: 'Only 3 days left to submit application for Microsoft SDE (28 LPA). Complete your application now.',
-    link: '/student/jobs',
-    read: true,
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-  },
-];
+const mockNotifications = [];
 
 const addMockNotification = (notif) => {
   const newNotif = {

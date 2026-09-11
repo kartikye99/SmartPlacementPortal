@@ -7,74 +7,7 @@ const { findMockUserById } = require('./authController');
 const { addMockNotification } = require('./notificationController');
 
 // In-Memory store for evaluation
-const mockApplications = [
-  {
-    _id: 'app-001',
-    jobId: 'job-001',
-    studentId: 'mock-student-001',
-    status: 'Shortlisted',
-    appliedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    resumeUrl: 'https://smartportal.edu/resumes/alex_chen_resume.pdf',
-    timeline: [
-      {
-        stage: 'Applied',
-        date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        notes: 'Application submitted with verified academic credentials.',
-        updatedBy: 'Student Portal',
-      },
-      {
-        stage: 'Shortlisted',
-        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        notes: 'Profile screened and shortlisted by Google University Recruitment Team.',
-        updatedBy: 'Dr. Sarah Jenkins (TPO)',
-      },
-    ],
-  },
-  {
-    _id: 'app-002',
-    jobId: 'job-002',
-    studentId: 'mock-student-001',
-    status: 'OA',
-    appliedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    resumeUrl: 'https://smartportal.edu/resumes/alex_chen_resume.pdf',
-    timeline: [
-      {
-        stage: 'Applied',
-        date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        notes: 'Application submitted successfully.',
-        updatedBy: 'Student Portal',
-      },
-      {
-        stage: 'Shortlisted',
-        date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-        notes: 'Resume cleared initial round of screening.',
-        updatedBy: 'TPO Cell',
-      },
-      {
-        stage: 'OA',
-        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        notes: 'Online Coding Assessment link dispatched via HackerRank. Test date: Sept 15.',
-        updatedBy: 'Microsoft Campus Team',
-      },
-    ],
-  },
-  {
-    _id: 'app-003',
-    jobId: 'job-003',
-    studentId: 'mock-student-001',
-    status: 'Applied',
-    appliedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    resumeUrl: 'https://smartportal.edu/resumes/alex_chen_resume.pdf',
-    timeline: [
-      {
-        stage: 'Applied',
-        date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        notes: 'Application received. Pending TPO screening.',
-        updatedBy: 'Student Portal',
-      },
-    ],
-  },
-];
+const mockApplications = [];
 
 // Helper to check eligibility
 const checkStudentEligibility = (student, job) => {

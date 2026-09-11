@@ -3,49 +3,8 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const { getStoreStatus } = require('../config/db');
 
-// In-Memory store fallback to guarantee 100% turnkey functionality even if local MongoDB isn't running
-const mockUsers = [
-  {
-    _id: 'mock-student-001',
-    name: 'Alex Chen',
-    email: 'student@portal.com',
-    passwordHash: bcrypt.hashSync('Password123!', 10),
-    role: 'student',
-    department: 'Computer Science & Engineering',
-    rollNumber: 'CS2026-089',
-    cgpa: 9.1,
-    graduationYear: 2026,
-    phone: '+91 98765 43210',
-    skills: ['React', 'Node.js', 'TypeScript', 'MongoDB', 'Python', 'Algorithms', 'Docker'],
-    readinessScore: 92,
-    placementStatus: 'In Process',
-    bio: 'Senior Year CS undergrad passionate about high-concurrency backend systems and modern frontend architectures.',
-    github: 'https://github.com/alex-chen',
-    linkedin: 'https://linkedin.com/in/alex-chen-dev',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'mock-admin-001',
-    name: 'Dr. Sarah Jenkins',
-    email: 'admin@portal.com',
-    passwordHash: bcrypt.hashSync('Password123!', 10),
-    role: 'admin',
-    department: 'Training & Placement Cell',
-    rollNumber: 'TPO-ADMIN-01',
-    cgpa: 10.0,
-    graduationYear: 2012,
-    phone: '+91 98111 22334',
-    skills: ['Corporate Relations', 'Placement Analytics', 'Student Mentoring', 'Industry Partnerships'],
-    readinessScore: 100,
-    placementStatus: 'Placed',
-    bio: 'Head of Placement & Career Development, driving institutional industry connect and tier-1 recruitment drives.',
-    github: 'https://github.com/tpo-cell',
-    linkedin: 'https://linkedin.com/in/sarah-jenkins-tpo',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    createdAt: new Date().toISOString(),
-  },
-];
+// In-Memory store fallback
+const mockUsers = [];
 
 const findMockUserById = (id) => {
   return mockUsers.find((u) => u._id === id);
@@ -265,55 +224,97 @@ const updateProfile = async (req, res) => {
 // @access  Private
 const getPortalStats = async (req, res) => {
   const role = req.user.role;
+  const { isMockStoreActive } = getStoreStatus();
+  const Job = require('../models/Job');
+  const Application = require('../models/Application');
 
   if (role === 'admin') {
+    let totalStudents = 0;
+    let placedStudents = 0;
+    let activeDrives = 0;
+    let upcomingDrives = 0;
+
+    if (!isMockStoreActive) {
+      try {
+        const [studentsCount, placedCount, jobsCount] = await Promise.all([
+          User.countDocuments({ role: 'student' }),
+          Application.countDocuments({ status: 'Selected' }),
+          Job.countDocuments({ status: 'published' }),
+        ]);
+        totalStudents = studentsCount;
+        placedStudents = placedCount;
+        activeDrives = jobsCount;
+      } catch (e) {
+        console.error('Error computing admin portal stats:', e);
+      }
+    }
+
+    const placementRate = totalStudents > 0 ? Math.round((placedStudents / totalStudents) * 100 * 10) / 10 : 0;
+
     return res.json({
       success: true,
       data: {
-        totalStudents: 480,
-        placedStudents: 394,
-        placementRate: 82.1,
-        activeDrives: 14,
-        upcomingDrives: 6,
-        avgPackageLPA: 12.8,
-        highestPackageLPA: 44.5,
-        topRecruiters: ['Google', 'Microsoft', 'Amazon', 'Adobe', 'Oracle', 'Goldman Sachs'],
-        recentApplicants: [
-          { id: '1', name: 'Rohan Sharma', branch: 'CSE', cgpa: 9.2, company: 'Google', role: 'SWE Intern', status: 'Shortlisted' },
-          { id: '2', name: 'Priya Patel', branch: 'ECE', cgpa: 8.7, company: 'Microsoft', role: 'Software Engineer', status: 'Interviewing' },
-          { id: '3', name: 'Ananya Verma', branch: 'IT', cgpa: 8.9, company: 'Amazon', role: 'SDE-1', status: 'Offer Extended' },
-          { id: '4', name: 'Kavya Nair', branch: 'CSE', cgpa: 9.4, company: 'Adobe', role: 'Product Intern', status: 'Applied' },
-          { id: '5', name: 'Devendra Singh', branch: 'EEE', cgpa: 8.2, company: 'Oracle', role: 'Cloud Engineer', status: 'Shortlisted' },
-        ],
-        branchStats: [
-          { branch: 'Computer Science', rate: 94, count: 180 },
-          { branch: 'Information Technology', rate: 91, count: 120 },
-          { branch: 'Electronics & Comm.', rate: 84, count: 100 },
-          { branch: 'Electrical Eng.', rate: 72, count: 80 },
-        ],
+        totalStudents,
+        placedStudents,
+        placementRate,
+        activeDrives,
+        upcomingDrives,
+        avgPackageLPA: 0,
+        highestPackageLPA: 0,
+        topRecruiters: [],
+        recentApplicants: [],
+        branchStats: [],
       },
     });
   }
 
   // Student stats
+  let appliedDrives = 0;
+  let shortlistedDrives = 0;
+  let pendingInterviews = 0;
+  let offersReceived = 0;
+  let activeDrivesList = [];
+
+  if (!isMockStoreActive && req.user?._id) {
+    try {
+      const [userApps, jobs] = await Promise.all([
+        Application.find({ studentId: req.user._id }),
+        Job.find({ status: 'published' }).sort({ createdAt: -1 }).limit(6),
+      ]);
+
+      appliedDrives = userApps.length;
+      shortlistedDrives = userApps.filter((a) => ['Shortlisted', 'OA', 'Technical', 'HR', 'Selected'].includes(a.status)).length;
+      pendingInterviews = userApps.filter((a) => ['Technical', 'HR'].includes(a.status)).length;
+      offersReceived = userApps.filter((a) => a.status === 'Selected').length;
+
+      const appliedJobIds = new Set(userApps.map((a) => a.jobId?.toString()));
+
+      activeDrivesList = jobs.map((j) => ({
+        id: j._id,
+        company: j.company?.name || 'Company',
+        role: j.title,
+        ctc: j.package || 'Negotiable',
+        location: j.location || 'Pan India',
+        deadline: new Date(j.deadline).toLocaleDateString([], { month: 'short', day: 'numeric' }),
+        eligibility: `CGPA >= ${j.eligibility?.minCgpa || 7.0}`,
+        status: appliedJobIds.has(j._id.toString()) ? 'Applied' : 'Not Applied',
+        logo: (j.company?.name || 'C').charAt(0).toUpperCase(),
+      }));
+    } catch (e) {
+      console.error('Error fetching student stats:', e);
+    }
+  }
+
   return res.json({
     success: true,
     data: {
-      appliedDrives: 7,
-      shortlistedDrives: 4,
-      pendingInterviews: 2,
-      offersReceived: 1,
-      targetCompany: 'Google India',
-      upcomingSchedules: [
-        { id: 's1', company: 'Google', round: 'Technical Round 2 (DSA & System Design)', date: 'Sept 14, 2026', time: '10:30 AM', mode: 'Virtual (Google Meet)' },
-        { id: 's2', company: 'Microsoft', round: 'Managerial & Core Culture Fit', date: 'Sept 18, 2026', time: '02:00 PM', mode: 'Campus Auditorium B' },
-      ],
-      activeDrives: [
-        { id: 'd1', company: 'Google', role: 'Associate Software Engineer', ctc: '32 LPA', location: 'Bengaluru / Hyderabad', deadline: 'Sept 12, 2026', eligibility: 'CGPA >= 8.0', status: 'Shortlisted', logo: 'G' },
-        { id: 'd2', company: 'Microsoft', role: 'Software Development Engineer', ctc: '28 LPA', location: 'Hyderabad / Noida', deadline: 'Sept 16, 2026', eligibility: 'CGPA >= 7.5', status: 'Interviewing', logo: 'M' },
-        { id: 'd3', company: 'Amazon', role: 'Applied Scientist / SDE', ctc: '34 LPA', location: 'Bengaluru', deadline: 'Sept 20, 2026', eligibility: 'CGPA >= 8.5', status: 'Applied', logo: 'A' },
-        { id: 'd4', company: 'Goldman Sachs', role: 'Analyst - Engineering', ctc: '26 LPA', location: 'Bengaluru', deadline: 'Sept 25, 2026', eligibility: 'CGPA >= 8.0', status: 'Not Applied', logo: 'GS' },
-      ],
+      appliedDrives,
+      shortlistedDrives,
+      pendingInterviews,
+      offersReceived,
+      targetCompany: '',
+      upcomingSchedules: [],
+      activeDrives: activeDrivesList,
     },
   });
 };

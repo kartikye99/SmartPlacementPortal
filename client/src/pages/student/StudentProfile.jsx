@@ -29,17 +29,17 @@ export const StudentProfile = () => {
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    phone: user?.phone || '+91 98765 43210',
-    department: user?.department || 'Computer Science & Engineering',
-    cgpa: user?.cgpa || 9.1,
+    phone: user?.phone || '',
+    department: user?.department || '',
+    cgpa: user?.cgpa || '',
     graduationYear: user?.graduationYear || 2026,
-    bio: user?.bio || 'Passionate full-stack developer eager to build high-impact software solutions.',
-    github: user?.github || 'https://github.com/alex-chen',
-    linkedin: user?.linkedin || 'https://linkedin.com/in/alex-chen-dev',
+    bio: user?.bio || '',
+    github: user?.github || '',
+    linkedin: user?.linkedin || '',
   });
 
   const [skills, setSkills] = useState(
-    user?.skills || ['React', 'Node.js', 'MongoDB', 'Python', 'Tailwind CSS', 'System Design']
+    Array.isArray(user?.skills) ? user.skills : []
   );
   const [newSkill, setNewSkill] = useState('');
   const [saving, setSaving] = useState(false);
