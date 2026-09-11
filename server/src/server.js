@@ -29,11 +29,13 @@ app.use(
   })
 );
 
-// CORS
+// CORS - dynamically allows all Vercel domains and localhost
 app.use(
   cors({
-    origin: '*',
+    origin: true,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 
@@ -58,8 +60,8 @@ const authLimiter = rateLimit({
     message: 'Too many authentication attempts, please try again after 15 minutes.',
   },
 });
-app.use('/api/auth/login', authLimiter);
-app.use('/api/auth/register', authLimiter);
+app.use(['/api/auth/login', '/auth/login'], authLimiter);
+app.use(['/api/auth/register', '/auth/register'], authLimiter);
 
 // Body Parser with 10MB limit for secure file/audio payloads
 app.use(express.json({ limit: '10mb' }));
@@ -92,15 +94,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/jobs', jobRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/questions', questionRoutes);
-app.use('/api/resumes', resumeRoutes);
-app.use('/api/interviews', interviewRoutes);
-app.use('/api/admin', adminRoutes);
+// Routes (Mounted on both /api/path and /path for maximum deployment resilience)
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/jobs', '/jobs'], jobRoutes);
+app.use(['/api/applications', '/applications'], applicationRoutes);
+app.use(['/api/notifications', '/notifications'], notificationRoutes);
+app.use(['/api/questions', '/questions'], questionRoutes);
+app.use(['/api/resumes', '/resumes'], resumeRoutes);
+app.use(['/api/interviews', '/interviews'], interviewRoutes);
+app.use(['/api/admin', '/admin'], adminRoutes);
 
 // Error Handling Middleware
 app.use(notFound);

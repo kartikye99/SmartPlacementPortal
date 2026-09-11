@@ -2,8 +2,34 @@
 
 // Configurable base URL: In development or via proxy, default to '/api'.
 // In production on Vercel, points to Render backend URL e.g. 'https://smartplacementportal.onrender.com/api'
-const RAW_BASE = import.meta.env.VITE_API_URL || '/api';
-const API_BASE = RAW_BASE.replace(/\/+$/, '');
+function getBaseUrl() {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl || !envUrl.trim()) {
+    return '/api';
+  }
+  return envUrl.trim().replace(/\/+$/, '');
+}
+
+const API_BASE = getBaseUrl();
+
+export function buildUrl(endpoint) {
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  // If API_BASE is relative '/api' (local dev proxy)
+  if (API_BASE === '/api') {
+    return cleanEndpoint.startsWith('/api/') ? cleanEndpoint : `/api${cleanEndpoint}`;
+  }
+
+  // If API_BASE already ends with /api (e.g. 'https://xxx.onrender.com/api')
+  if (API_BASE.endsWith('/api')) {
+    const withoutApi = cleanEndpoint.startsWith('/api/') ? cleanEndpoint.slice(4) : cleanEndpoint;
+    return `${API_BASE}${withoutApi}`;
+  }
+
+  // If API_BASE is just origin (e.g. 'https://xxx.onrender.com')
+  const withoutApi = cleanEndpoint.startsWith('/api/') ? cleanEndpoint.slice(4) : cleanEndpoint;
+  return `${API_BASE}/api${withoutApi}`;
+}
 
 // In-memory response cache (similar to React Query client cache)
 const apiCache = new Map();
@@ -51,11 +77,24 @@ export const api = {
       config.body = JSON.stringify(config.body);
     }
 
+    const targetUrl = buildUrl(endpoint);
+
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, config);
+      const response = await fetch(targetUrl, config);
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
+        if (
+          response.status === 404 &&
+          API_BASE === '/api' &&
+          typeof window !== 'undefined' &&
+          window.location.hostname !== 'localhost' &&
+          window.location.hostname !== '127.0.0.1'
+        ) {
+          throw new Error(
+            'Backend API connection missing. In Vercel Project Settings > Environment Variables, add VITE_API_URL set to your Render backend URL (e.g. https://your-app.onrender.com) and click Redeploy.'
+          );
+        }
         throw new Error(data.message || `Request failed with status ${response.status}`);
       }
 
@@ -81,7 +120,7 @@ export const api = {
 
       return data;
     } catch (error) {
-      console.error(`[API Error] ${endpoint}:`, error.message);
+      console.error(`[API Error] ${targetUrl}:`, error.message);
       throw error;
     }
   },
