@@ -50,26 +50,26 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      default: '+91 98765 43210',
+      default: '',
     },
     skills: {
       type: [String],
-      default: ['React', 'Node.js', 'MongoDB', 'Python', 'Tailwind CSS', 'System Design'],
+      default: [],
     },
     solvedQuestions: {
       type: [String],
-      default: ['q-graph-001', 'q-tree-001', 'q-arr-001'],
+      default: [],
     },
     readinessScore: {
       type: Number,
-      default: 88,
+      default: 0,
       min: 0,
       max: 100,
     },
     placementStatus: {
       type: String,
       enum: ['Placed', 'In Process', 'Not Started'],
-      default: 'In Process',
+      default: 'Not Started',
     },
     bio: {
       type: String,

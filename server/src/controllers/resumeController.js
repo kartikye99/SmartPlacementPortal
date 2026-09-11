@@ -142,7 +142,13 @@ const analyzeResume = async (req, res) => {
     let targetJdText = jdText || '';
 
     if (jobId) {
-      job = isMockStoreActive ? findMockJobById(jobId) : await Job.findById(jobId);
+      if (isMockStoreActive) {
+        job = findMockJobById(jobId);
+      } else if (mongoose.Types.ObjectId.isValid(jobId)) {
+        job = await Job.findById(jobId);
+      } else {
+        job = findMockJobById(jobId);
+      }
       if (job && !targetJdText) {
         targetJdText = job.description;
       }
@@ -184,7 +190,14 @@ const getResumeJobMatch = async (req, res) => {
     const { isMockStoreActive } = getStoreStatus();
 
     // 1. Get job
-    const job = isMockStoreActive ? findMockJobById(jobId) : await Job.findById(jobId);
+    let job = null;
+    if (isMockStoreActive) {
+      job = findMockJobById(jobId);
+    } else if (mongoose.Types.ObjectId.isValid(jobId)) {
+      job = await Job.findById(jobId);
+    } else {
+      job = findMockJobById(jobId);
+    }
     if (!job) {
       return res.status(404).json({ message: 'Job drive not found' });
     }

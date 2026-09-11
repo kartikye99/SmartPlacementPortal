@@ -94,6 +94,7 @@ export default function App() {
                     <Route path="/student/interview" element={<InterviewHub />} />
                     <Route path="/student/interview/arena/:id" element={<MockInterviewArena />} />
                     <Route path="/student/interview/analysis/:id" element={<InterviewAnalysis />} />
+                    <Route path="/student/prepare" element={<Navigate to="/student/practice" replace />} />
                     <Route path="/student/prepare/:jobId" element={<PrepareHub />} />
                     <Route path="/student/profile" element={<StudentProfile />} />
                   </Route>

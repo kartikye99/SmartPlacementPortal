@@ -126,15 +126,15 @@ export const AdminDashboard = () => {
   }
 
   const kpis = intelData?.kpis || {
-    totalStudents: 480,
-    activeJobs: 14,
-    totalApplications: 512,
-    shortlistedCount: 348,
-    interviewsCount: 165,
-    placedCount: 76,
-    placementPercentage: 82.1,
-    averagePackageLPA: 14.8,
-    highestPackageLPA: 44.5,
+    totalStudents: 0,
+    activeJobs: 0,
+    totalApplications: 0,
+    shortlistedCount: 0,
+    interviewsCount: 0,
+    placedCount: 0,
+    placementPercentage: 0,
+    averagePackageLPA: 0,
+    highestPackageLPA: 0,
   };
 
   const funnel = intelData?.placementFunnel || [];

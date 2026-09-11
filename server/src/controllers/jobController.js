@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
 const { getStoreStatus } = require('../config/db');
@@ -114,7 +115,13 @@ const getJobById = async (req, res) => {
       return res.json({ success: true, job });
     }
 
-    const job = await Job.findById(id);
+    let job = null;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      job = await Job.findById(id);
+    }
+    if (!job) {
+      job = findMockJobById(id);
+    }
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -267,6 +274,8 @@ const updateJob = async (req, res) => {
         message: 'Job drive updated successfully',
         job,
       });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Job not found' });
     }
 
     const job = await Job.findById(id);
@@ -306,6 +315,8 @@ const deleteJob = async (req, res) => {
       }
       mockJobs.splice(index, 1);
       return res.json({ success: true, message: 'Job drive deleted successfully' });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: 'Job not found' });
     }
 
     const job = await Job.findById(id);
@@ -411,7 +422,13 @@ const getJobPreparation = async (req, res) => {
     }
 
     // MongoDB Flow
-    const job = await Job.findById(id);
+    let job = null;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      job = await Job.findById(id);
+    }
+    if (!job) {
+      job = findMockJobById(id);
+    }
     if (!job) {
       return res.status(404).json({ message: 'Job drive not found' });
     }

@@ -7,9 +7,7 @@ const Job = require('../models/Job');
 
 // In-Memory store for offline/turnkey resilience
 let mockQuestions = [...seedQuestions];
-const mockUserSolvedMap = {
-  'student-001': ['q-graph-001', 'q-tree-001', 'q-arr-001'],
-};
+const mockUserSolvedMap = {};
 
 /**
  * Helper to get user's solved question IDs
@@ -20,7 +18,7 @@ const getUserSolvedList = async (user) => {
   if (isMockStoreActive) {
     const userId = user._id ? user._id.toString() : 'student-001';
     if (!mockUserSolvedMap[userId]) {
-      mockUserSolvedMap[userId] = user.solvedQuestions || ['q-graph-001', 'q-tree-001', 'q-arr-001'];
+      mockUserSolvedMap[userId] = user.solvedQuestions || [];
     }
     return mockUserSolvedMap[userId];
   }
@@ -142,13 +140,16 @@ const getRecommendedQuestionsForJob = async (req, res) => {
   try {
     const { jobId } = req.params;
     const { isMockStoreActive } = getStoreStatus();
+    const mongoose = require('mongoose');
 
     // 1. Find the target job
     let job = null;
     if (isMockStoreActive) {
       job = findMockJobById(jobId);
-    } else {
+    } else if (mongoose.Types.ObjectId.isValid(jobId)) {
       job = await Job.findById(jobId);
+    } else {
+      job = findMockJobById(jobId);
     }
 
     const companyName = job?.company?.name || 'Amazon';
@@ -282,7 +283,7 @@ const toggleQuestionSolved = async (req, res) => {
 
     if (isMockStoreActive) {
       if (!mockUserSolvedMap[userId]) {
-        mockUserSolvedMap[userId] = ['q-graph-001', 'q-tree-001', 'q-arr-001'];
+        mockUserSolvedMap[userId] = [];
       }
       const list = mockUserSolvedMap[userId];
       const idx = list.indexOf(id);
@@ -375,10 +376,76 @@ const getStudentCodingStats = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Generate AI-curated interview questions for a particular drive/company
+ * @route   POST /api/questions/generate
+ * @access  Private
+ */
+const generateQuestions = async (req, res) => {
+  try {
+    const {
+      company = 'Amazon',
+      roleTitle = 'Software Development Engineer',
+      topics = [],
+      difficulty = 'All',
+      count = 5,
+    } = req.body;
+
+    const { generateCodingQuestionsForDrive } = require('../services/geminiService');
+    const { isMockStoreActive } = getStoreStatus();
+
+    const generated = await generateCodingQuestionsForDrive({
+      companyName: company,
+      roleTitle,
+      topics,
+      difficulty,
+      count: Math.min(Math.max(Number(count) || 5, 1), 15),
+    });
+
+    const savedQuestions = [];
+
+    if (isMockStoreActive) {
+      for (const q of generated) {
+        const newQ = {
+          _id: `q-ai-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+          ...q,
+          createdAt: new Date(),
+        };
+        mockQuestions.unshift(newQ);
+        savedQuestions.push(newQ);
+      }
+    } else {
+      for (const q of generated) {
+        let existing = await Question.findOne({ title: q.title });
+        if (existing) {
+          if (!existing.companies.includes(company)) {
+            existing.companies.push(company);
+            await existing.save();
+          }
+          savedQuestions.push(existing);
+        } else {
+          const newQ = await Question.create(q);
+          savedQuestions.push(newQ);
+        }
+      }
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: `Successfully generated ${savedQuestions.length} interview questions for ${company}!`,
+      questions: savedQuestions,
+    });
+  } catch (error) {
+    console.error('Error generating questions:', error);
+    return res.status(500).json({ message: error.message || 'Failed to generate questions' });
+  }
+};
+
 module.exports = {
   getQuestions,
   getRecommendedQuestionsForJob,
   toggleQuestionSolved,
   getStudentCodingStats,
+  generateQuestions,
   seedQuestions,
 };

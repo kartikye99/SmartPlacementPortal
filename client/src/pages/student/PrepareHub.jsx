@@ -64,22 +64,21 @@ export const PrepareHub = () => {
   const [codingPlatformFilter, setCodingPlatformFilter] = useState('all');
   const [codingStatusFilter, setCodingStatusFilter] = useState('all');
 
-  // User interactive progress tracking saved in local storage per job
   const [solvedProblems, setSolvedProblems] = useState(() => {
     try {
       const saved = localStorage.getItem(`prep_solved_${jobId}`);
-      return saved ? JSON.parse(saved) : ['q-graph-001', 'q-tree-001'];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ['q-graph-001', 'q-tree-001'];
+      return [];
     }
   });
 
   const [completedChecklist, setCompletedChecklist] = useState(() => {
     try {
       const saved = localStorage.getItem(`prep_checklist_${jobId}`);
-      return saved ? JSON.parse(saved) : ['m-1', 'm-3'];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ['m-1', 'm-3'];
+      return [];
     }
   });
 
@@ -163,15 +162,20 @@ export const PrepareHub = () => {
 
   if (!data?.job || !data?.analysis) {
     return (
-      <div className="py-20 text-center glass-panel rounded-3xl p-8 max-w-xl mx-auto">
-        <HelpCircle className="w-12 h-12 text-slate-500 mx-auto mb-3" />
-        <h3 className="text-base font-bold text-white">Preparation Hub Unavailable</h3>
-        <p className="text-xs text-slate-400 mt-1 mb-4">
-          Could not load the intelligent preparation workspace for this drive.
+      <div className="py-20 text-center glass-panel rounded-3xl p-8 max-w-xl mx-auto space-y-4">
+        <HelpCircle className="w-12 h-12 text-slate-500 mx-auto opacity-70" />
+        <h3 className="text-base font-bold text-white">Drive Preparation Workspace Not Found</h3>
+        <p className="text-xs text-slate-400 max-w-sm mx-auto">
+          This placement drive record is not currently accessible or has been removed. You can continue practicing high-frequency algorithmic problems in the Coding Arena.
         </p>
-        <Button variant="primary" size="sm" onClick={() => navigate('/student/jobs')}>
-          Back to Drives
-        </Button>
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <Button variant="secondary" size="sm" onClick={() => navigate('/student/jobs')}>
+            Browse Drives
+          </Button>
+          <Button variant="primary" size="sm" onClick={() => navigate('/student/practice')}>
+            Go to Coding Arena
+          </Button>
+        </div>
       </div>
     );
   }

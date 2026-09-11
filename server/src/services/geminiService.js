@@ -290,7 +290,147 @@ Respond strictly in valid JSON format matching this exact schema:
   }
 };
 
+const getFallbackCodingQuestions = (companyName, topics = [], count = 5) => {
+  const pool = [
+    {
+      title: `${companyName} Route Optimization (Topological Sort)`,
+      platform: 'LeetCode',
+      url: 'https://leetcode.com/problems/course-schedule-ii/',
+      difficulty: 'Medium',
+      topics: ['Graphs', 'Topological Sort', 'BFS'],
+      companies: [companyName],
+      frequency: 92,
+      acceptanceRate: 49.5,
+      description: 'Find a valid topological ordering of tasks given prerequisite constraints, or return empty if cyclic.',
+    },
+    {
+      title: `${companyName} Distributed Cache (LRU Eviction)`,
+      platform: 'LeetCode',
+      url: 'https://leetcode.com/problems/lru-cache/',
+      difficulty: 'Medium',
+      topics: ['Hash Table', 'Linked List', 'System Design'],
+      companies: [companyName],
+      frequency: 96,
+      acceptanceRate: 42.1,
+      description: 'Design a data structure that follows the constraints of a Least Recently Used (LRU) cache with O(1) get and put operations.',
+    },
+    {
+      title: 'Word Break & Dictionary Tokenization',
+      platform: 'LeetCode',
+      url: 'https://leetcode.com/problems/word-break/',
+      difficulty: 'Medium',
+      topics: ['Dynamic Programming', 'Trie', 'Memoization'],
+      companies: [companyName],
+      frequency: 88,
+      acceptanceRate: 46.8,
+      description: 'Determine if a given string can be segmented into a space-separated sequence of one or more dictionary words.',
+    },
+    {
+      title: 'Longest Substring Without Repeating Characters',
+      platform: 'LeetCode',
+      url: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/',
+      difficulty: 'Medium',
+      topics: ['Arrays & Strings', 'Sliding Window', 'Hash Table'],
+      companies: [companyName],
+      frequency: 94,
+      acceptanceRate: 34.7,
+      description: 'Given a string s, find the length of the longest substring without repeating characters using a sliding window.',
+    },
+    {
+      title: 'Binary Tree Maximum Path Sum',
+      platform: 'LeetCode',
+      url: 'https://leetcode.com/problems/binary-tree-maximum-path-sum/',
+      difficulty: 'Hard',
+      topics: ['Trees', 'Depth-First Search', 'Dynamic Programming'],
+      companies: [companyName],
+      frequency: 85,
+      acceptanceRate: 39.8,
+      description: 'Find the maximum path sum of any non-empty path in a binary tree where path can start and end at any node.',
+    },
+    {
+      title: 'Trapping Rain Water',
+      platform: 'LeetCode',
+      url: 'https://leetcode.com/problems/trapping-rain-water/',
+      difficulty: 'Hard',
+      topics: ['Arrays & Strings', 'Two Pointers', 'Stack'],
+      companies: [companyName],
+      frequency: 91,
+      acceptanceRate: 61.2,
+      description: 'Compute how much water an elevation map can trap after raining using two pointers or monotonic stacks.',
+    },
+  ];
+
+  return pool.slice(0, Math.min(count, pool.length));
+};
+
+/**
+ * Generate authentic coding interview questions for a specific drive/company using Gemini 3.6 Flash
+ */
+const generateCodingQuestionsForDrive = async ({ companyName = 'Tech Company', roleTitle = 'Software Engineer', topics = [], difficulty = 'All', count = 5 }) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey || apiKey === 'your_gemini_api_key_here') {
+    return getFallbackCodingQuestions(companyName, topics, count);
+  }
+
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+    const prompt = `You are a Senior Technical Recruiter & Lead Algorithmic Interviewer for ${companyName}.
+Generate exactly ${count} authentic, top-tier technical coding assessment questions frequently asked in campus hiring drives at ${companyName} for ${roleTitle}.
+${topics.length > 0 ? `Target algorithmic topics: ${topics.join(', ')}.` : ''}
+${difficulty && difficulty !== 'All' ? `Target difficulty: ${difficulty}.` : ''}
+
+For each question, provide:
+1. title: Exact official problem title (e.g. "Trapping Rain Water", "Course Schedule", "Word Break").
+2. platform: "LeetCode" or "GeeksforGeeks".
+3. url: Authentic problem URL (e.g. "https://leetcode.com/problems/trapping-rain-water/").
+4. difficulty: "Easy", "Medium", or "Hard".
+5. topics: Array of string topic tags (e.g. ["Dynamic Programming", "Arrays & Strings"]).
+6. companies: Array of strings including "${companyName}".
+7. frequency: Number between 75 and 99 indicating how frequently asked it is.
+8. acceptanceRate: Realistic percentage float (e.g. 52.4).
+9. description: High-precision 2-sentence summary of the problem statement and constraints.
+
+Return strictly valid JSON in this exact structure:
+{
+  "questions": [
+    {
+      "title": "Problem Title",
+      "platform": "LeetCode",
+      "url": "https://leetcode.com/problems/problem-slug/",
+      "difficulty": "Medium",
+      "topics": ["Dynamic Programming", "Arrays & Strings"],
+      "companies": ["${companyName}"],
+      "frequency": 88,
+      "acceptanceRate": 48.2,
+      "description": "Problem description."
+    }
+  ]
+}`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.6-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+      },
+    });
+
+    const parsed = JSON.parse(response.text);
+    const questions = parsed.questions || [];
+    if (questions.length === 0) {
+      return getFallbackCodingQuestions(companyName, topics, count);
+    }
+    return questions;
+  } catch (error) {
+    console.warn(`[Gemini Questions] Generation failed (${error.message}). Using fallback.`);
+    return getFallbackCodingQuestions(companyName, topics, count);
+  }
+};
+
 module.exports = {
   analyzeJobDescription,
   generateDeterministicAnalysis,
+  generateCodingQuestionsForDrive,
 };
+

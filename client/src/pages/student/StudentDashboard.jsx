@@ -32,7 +32,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../components/commo
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { CircularProgress, ProgressBar } from '../../components/common/Progress';
-import { Modal } from '../../components/common/Modal';
 import { SkeletonCard } from '../../components/common/Skeleton';
 
 export const StudentDashboard = () => {
@@ -42,9 +41,6 @@ export const StudentDashboard = () => {
   const navigate = useNavigate();
   const [statsData, setStatsData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedDrive, setSelectedDrive] = useState(null);
-  const [appliedDrives, setAppliedDrives] = useState({});
-
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -61,21 +57,6 @@ export const StudentDashboard = () => {
 
     fetchStats();
   }, []);
-
-  const handleApplyDrive = async (drive) => {
-    try {
-      const res = await api.post(`/jobs/${drive.id}/apply`);
-      if (res.success) {
-        toast.success(`Application submitted for ${drive.company}!`);
-        setAppliedDrives((prev) => ({ ...prev, [drive.id]: true }));
-        setSelectedDrive(null);
-      } else {
-        toast.error(res.message || 'Failed to apply');
-      }
-    } catch (err) {
-      toast.error('Application submission failed. Please try again.');
-    }
-  };
 
   if (loading) {
     return (
@@ -166,10 +147,10 @@ export const StudentDashboard = () => {
               <Button
                 variant="ai"
                 size="sm"
-                onClick={() => navigate('/student/prepare/job-003')}
-                leftIcon={<Sparkles className="w-4 h-4 text-fuchsia-200" />}
+                onClick={() => navigate('/student/practice')}
+                leftIcon={<Code2 className="w-4 h-4 text-fuchsia-200" />}
               >
-                Prepare with AI
+                Coding Arena
               </Button>
               <Button
                 variant="jobs"
@@ -177,7 +158,7 @@ export const StudentDashboard = () => {
                 onClick={() => navigate('/student/jobs')}
                 leftIcon={<Briefcase className="w-4 h-4" />}
               >
-                Explore Drives ({drives.length})
+                Explore Drives
               </Button>
               <Button
                 variant="resume"
@@ -235,44 +216,35 @@ export const StudentDashboard = () => {
           3. What do I need to improve?
           =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Card 1: What jobs can I apply for? (Indigo + Violet) */}
+        {/* Card 1: Algorithmic Practice Arena */}
         <Card area="jobs" hover className="flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-300">
-                <Briefcase className="w-5 h-5" />
+                <Code2 className="w-5 h-5" />
               </div>
-              <Badge variant="jobs" dot>Drives Open</Badge>
+              <Badge variant="jobs" dot>Practice Arena</Badge>
             </div>
-            <h3 className="text-base font-bold text-white tracking-tight">What jobs can I apply for?</h3>
+            <h3 className="text-base font-bold text-white tracking-tight">Algorithmic Practice Arena</h3>
             <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              {drives.length > 0
-                ? `${drives.length} recruitment drive${drives.length > 1 ? 's' : ''} currently open for applications.`
-                : 'Browse campus drives matching your academic credentials and branch.'}
+              Master company-tagged DSA patterns across LeetCode & GeeksforGeeks problems.
             </p>
 
             <div className="mt-4 space-y-2.5">
-              {drives.length > 0 ? (
-                drives.slice(0, 3).map((j, i) => (
-                  <div
-                    key={i}
-                    className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between gap-2 text-xs"
-                  >
-                    <div>
-                      <span className="font-bold text-white block">{j.company}</span>
-                      <span className="text-[11px] text-slate-400">{j.role}</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-emerald-400 font-bold block">{j.ctc}</span>
-                      <span className="text-[10px] text-rose-300">Closes {j.deadline}</span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-center text-xs text-slate-400">
-                  No active recruitment drives posted at this moment.
+              {[
+                { topic: 'Dynamic Programming & Knapsack', badge: 'High Yield', color: 'text-amber-400' },
+                { topic: 'Graphs (BFS, DFS, Dijkstra)', badge: 'Top Priority', color: 'text-violet-400' },
+                { topic: 'Trees, BSTs & Traversals', badge: 'Essential', color: 'text-cyan-400' },
+              ].map((t, i) => (
+                <div
+                  key={i}
+                  onClick={() => navigate('/student/practice')}
+                  className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 flex items-center justify-between gap-2 text-xs cursor-pointer transition-all"
+                >
+                  <span className="font-semibold text-white">{t.topic}</span>
+                  <span className={`text-[11px] font-bold ${t.color}`}>{t.badge}</span>
                 </div>
-              )}
+              ))}
             </div>
           </div>
 
@@ -280,10 +252,10 @@ export const StudentDashboard = () => {
             variant="jobs"
             size="sm"
             className="w-full font-bold"
-            onClick={() => navigate('/student/jobs')}
+            onClick={() => navigate('/student/practice')}
             rightIcon={<ChevronRight className="w-4 h-4" />}
           >
-            Apply to Matching Drives
+            Launch Coding Arena
           </Button>
         </Card>
 
@@ -303,7 +275,7 @@ export const StudentDashboard = () => {
 
             <div className="mt-4 space-y-2.5">
               <div
-                onClick={() => navigate(drives.length > 0 ? `/student/prepare/${drives[0].id}` : '/student/practice')}
+                onClick={() => navigate('/student/practice')}
                 className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/25 hover:border-purple-500/50 cursor-pointer transition-all text-xs flex items-center justify-between"
               >
                 <div className="flex items-center gap-2.5">
@@ -356,7 +328,7 @@ export const StudentDashboard = () => {
             variant="ai"
             size="sm"
             className="w-full font-bold"
-            onClick={() => navigate(drives.length > 0 ? `/student/prepare/${drives[0].id}` : '/student/practice')}
+            onClick={() => navigate('/student/practice')}
             leftIcon={<Sparkles className="w-4 h-4" />}
           >
             Launch AI Workspace
@@ -400,14 +372,14 @@ export const StudentDashboard = () => {
 
       {/* METRICS ROW */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card area="deadline" hover className="flex items-center gap-4">
+        <Card area="deadline" hover className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/student/practice')}>
           <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shadow-md shadow-rose-500/15 shrink-0">
-            <Briefcase className="w-6 h-6" />
+            <Code2 className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Active Drives</p>
-            <h3 className="text-2xl font-black text-white mt-0.5">{drives.length}</h3>
-            <span className="text-[11px] text-rose-300 font-medium">{drives.length > 0 ? `${drives.length} open drives` : 'No open drives'}</span>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">DSA Practice</p>
+            <h3 className="text-2xl font-black text-white mt-0.5">{user?.solvedQuestions?.length || 0}</h3>
+            <span className="text-[11px] text-rose-300 font-medium">Problems solved</span>
           </div>
         </Card>
 
@@ -418,7 +390,7 @@ export const StudentDashboard = () => {
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Applications</p>
             <h3 className="text-2xl font-black text-white mt-0.5">
-              {(statsData?.appliedDrives || 0) + Object.keys(appliedDrives).length}
+              {statsData?.appliedDrives || 0}
             </h3>
             <span className="text-[11px] text-indigo-300 font-medium">Submitted applications</span>
           </div>
@@ -453,11 +425,7 @@ export const StudentDashboard = () => {
           <div>
             <CardTitle>Application Pipeline Tracker</CardTitle>
             <p className="text-xs text-slate-400 mt-0.5">
-              {drives.length > 0 ? (
-                <>Active drive tracking for: <span className="font-bold text-white">{drives[0].company} — {drives[0].role}</span></>
-              ) : (
-                'Track your recruitment and interview milestones in real-time.'
-              )}
+              Track your recruitment and interview milestones in real-time.
             </p>
           </div>
           <Badge variant="jobs" dot>{statsData?.appliedDrives > 0 ? 'Pipeline Active' : 'No Active Applications'}</Badge>
@@ -508,104 +476,117 @@ export const StudentDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* ACTIVE DRIVES & UPCOMING ROUNDS */}
+      {/* CODING ARENA HUB & UPCOMING ROUNDS */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Active Drives */}
+        {/* Left Column: High-Yield Algorithmic Practice */}
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold text-white tracking-tight">Active Recruitment Drives</h3>
-              <p className="text-xs text-slate-400">Direct on-campus corporate listings</p>
+              <h3 className="text-lg font-bold text-white tracking-tight">High-Yield Algorithmic Focus</h3>
+              <p className="text-xs text-slate-400">Curated problem sets frequently tested in technical OAs</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="jobs" size="sm">Drives Open</Badge>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/student/jobs')}
-              >
-                Browse All Drives
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/student/practice')}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+            >
+              Open Coding Arena
+            </Button>
           </div>
 
-          <div className="space-y-3">
-            {drives.length === 0 ? (
-              <div className="glass-panel p-8 rounded-2xl text-center">
-                <Briefcase className="w-10 h-10 text-slate-500 mx-auto mb-3 opacity-50" />
-                <h4 className="text-sm font-bold text-white">No Active Recruitment Drives</h4>
-                <p className="text-xs text-slate-400 mt-1 mb-4">
-                  There are currently no active placement drives published. Drives published by the placement cell will appear here.
-                </p>
-                <Button variant="jobs" size="sm" onClick={() => navigate('/student/jobs')}>
-                  Explore Placement Portal
-                </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div
+              onClick={() => navigate('/student/practice')}
+              className="glass-panel p-5 rounded-2xl border border-white/5 hover:border-violet-500/40 cursor-pointer transition-all space-y-3 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-300">
+                  <Code2 className="w-5 h-5" />
+                </div>
+                <Badge variant="violet" size="sm">Top Priority</Badge>
               </div>
-            ) : (
-              drives.map((drive) => {
-                const isApplied =
-                  appliedDrives[drive.id] ||
-                  drive.status === 'Applied' ||
-                  drive.status === 'Shortlisted' ||
-                  drive.status === 'Interviewing';
-                return (
-                  <div
-                    key={drive.id}
-                    className="glass-panel card-area-jobs p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition-all"
-                  >
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center font-black text-indigo-300 text-lg shrink-0">
-                        {drive.logo}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-base font-bold text-white">{drive.company}</h4>
-                          <Badge
-                            variant={isApplied ? 'success' : 'jobs'}
-                            size="sm"
-                          >
-                            {appliedDrives[drive.id] ? 'Applied' : drive.status}
-                          </Badge>
-                        </div>
-                        <p className="text-xs font-semibold text-indigo-300 mt-0.5">{drive.role}</p>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-400">
-                          <span className="flex items-center gap-1 font-bold text-emerald-400">
-                            <Award className="w-3.5 h-3.5" />
-                            {drive.ctc}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                            {drive.location}
-                          </span>
-                          <span className="flex items-center gap-1 text-rose-300">
-                            <Clock className="w-3.5 h-3.5" />
-                            Deadline: {drive.deadline}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+              <div>
+                <h4 className="text-sm font-bold text-white group-hover:text-violet-300 transition-colors">
+                  Graphs, Trees & Traversals
+                </h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  BFS, DFS, Dijkstra, Lowest Common Ancestor, Topological Sort.
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-violet-400 flex items-center gap-1">
+                Start Problem Set <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
 
-                    <div className="flex items-center gap-2 sm:self-center">
-                      <Button
-                        variant="ai"
-                        size="sm"
-                        onClick={() => navigate(`/student/prepare/${drive.id}`)}
-                        leftIcon={<Sparkles className="w-3.5 h-3.5" />}
-                      >
-                        Prepare with AI
-                      </Button>
-                      <Button
-                        variant={isApplied ? 'secondary' : 'jobs'}
-                        size="sm"
-                        onClick={() => setSelectedDrive(drive)}
-                      >
-                        {isApplied ? 'View Details' : 'Apply Now'}
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+            <div
+              onClick={() => navigate('/student/practice')}
+              className="glass-panel p-5 rounded-2xl border border-white/5 hover:border-amber-500/40 cursor-pointer transition-all space-y-3 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                  <Brain className="w-5 h-5" />
+                </div>
+                <Badge variant="warning" size="sm">High Yield</Badge>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                  Dynamic Programming
+                </h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  0/1 Knapsack, LCS, LIS, Matrix Chain, Grid Paths.
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-amber-400 flex items-center gap-1">
+                Start Problem Set <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+
+            <div
+              onClick={() => navigate('/student/practice')}
+              className="glass-panel p-5 rounded-2xl border border-white/5 hover:border-cyan-500/40 cursor-pointer transition-all space-y-3 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-300">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <Badge variant="success" size="sm">Core Foundation</Badge>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  Sliding Window & Two Pointers
+                </h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  Subarrays, prefix sums, string hashing, monotonic queues.
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-cyan-400 flex items-center gap-1">
+                Start Problem Set <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+
+            <div
+              onClick={() => navigate('/student/practice')}
+              className="glass-panel p-5 rounded-2xl border border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-950/20 to-transparent hover:border-fuchsia-500/50 cursor-pointer transition-all space-y-3 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-300">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <Badge variant="ai" size="sm">AI Engine</Badge>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white group-hover:text-fuchsia-300 transition-colors">
+                  Generate Drive Questions
+                </h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  Generate authentic questions tailored to any target company using Gemini.
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-fuchsia-300 flex items-center gap-1">
+                Launch AI Generator <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
           </div>
         </div>
 
@@ -663,72 +644,6 @@ export const StudentDashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Drive Details & Apply Modal */}
-      {selectedDrive && (
-        <Modal
-          isOpen={!!selectedDrive}
-          onClose={() => setSelectedDrive(null)}
-          title={`${selectedDrive.company} — ${selectedDrive.role}`}
-          description={`Campus Placement Drive • Batch of 2026`}
-          footer={
-            <>
-              <Button variant="ghost" size="sm" onClick={() => setSelectedDrive(null)}>
-                Close
-              </Button>
-              <Button
-                variant={appliedDrives[selectedDrive.id] ? 'secondary' : 'jobs'}
-                size="sm"
-                disabled={appliedDrives[selectedDrive.id]}
-                onClick={() => handleApplyDrive(selectedDrive)}
-              >
-                {appliedDrives[selectedDrive.id] ? 'Already Applied' : 'Submit Application'}
-              </Button>
-            </>
-          }
-        >
-          <div className="space-y-4 text-left">
-            <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-              <div>
-                <span className="text-slate-400 block font-semibold">Compensation (CTC)</span>
-                <span className="text-emerald-400 font-extrabold text-sm">{selectedDrive.ctc}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block font-semibold">Locations</span>
-                <span className="text-white font-medium">{selectedDrive.location}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block font-semibold">Eligibility</span>
-                <span className="text-indigo-300 font-semibold">{selectedDrive.eligibility}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block font-semibold">Registration Deadline</span>
-                <span className="text-rose-400 font-semibold">{selectedDrive.deadline}</span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Key Responsibilities & Scope
-              </h5>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Design and develop scalable microservices, participate in architectural reviews, and collaborate with cross-functional engineering teams.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Required Skillsets
-              </h5>
-              <div className="flex flex-wrap gap-1.5">
-                {['Data Structures & Algorithms', 'System Design', 'React / Modern JS', 'Node.js / Python', 'SQL / NoSQL'].map((skill, i) => (
-                  <Badge key={i} variant="neutral" size="sm">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ const {
   getRecommendedQuestionsForJob,
   toggleQuestionSolved,
   getStudentCodingStats,
+  generateQuestions,
 } = require('../controllers/questionController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -14,6 +15,7 @@ router.use(protect);
 router.get('/', getQuestions);
 router.get('/stats', getStudentCodingStats);
 router.get('/recommended/:jobId', getRecommendedQuestionsForJob);
+router.post('/generate', generateQuestions);
 router.post('/:id/toggle-solve', toggleQuestionSolved);
 
 module.exports = router;

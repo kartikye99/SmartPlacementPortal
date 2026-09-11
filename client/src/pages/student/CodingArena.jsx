@@ -22,6 +22,8 @@ import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { ProgressBar } from '../../components/common/Progress';
 import { SkeletonCard } from '../../components/common/Skeleton';
+import { Modal } from '../../components/common/Modal';
+import { Input } from '../../components/common/Input';
 import { useTheme } from '../../context/ThemeContext';
 
 const COMPANIES = [
@@ -62,6 +64,66 @@ export const CodingArena = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [selectedPlatform, setSelectedPlatform] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+
+  // AI Generation Modal State
+  const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+  const [genCompany, setGenCompany] = useState('');
+  const [genRole, setGenRole] = useState('Software Development Engineer (SDE)');
+  const [genTopics, setGenTopics] = useState(['Arrays & Strings', 'Dynamic Programming']);
+  const [genDifficulty, setGenDifficulty] = useState('All');
+  const [genCount, setGenCount] = useState(4);
+  const [generating, setGenerating] = useState(false);
+
+  const handleOpenGenerateModal = (initialCompany = '') => {
+    setGenCompany(initialCompany || (selectedCompany !== 'All Companies' ? selectedCompany : ''));
+    setIsGenerateModalOpen(true);
+  };
+
+  const toggleGenTopic = (topic) => {
+    setGenTopics((prev) =>
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+    );
+  };
+
+  const handleGenerateQuestions = async (e) => {
+    e?.preventDefault();
+    if (!genCompany.trim()) {
+      toast.error('Please specify the company or drive name');
+      return;
+    }
+
+    try {
+      setGenerating(true);
+      const res = await api.post('/questions/generate', {
+        company: genCompany.trim(),
+        roleTitle: genRole.trim(),
+        topics: genTopics,
+        difficulty: genDifficulty,
+        count: Number(genCount) || 4,
+      });
+
+      if (res.success) {
+        toast.success(res.message || `Successfully generated questions for ${genCompany}!`);
+        setIsGenerateModalOpen(false);
+        setSelectedCompany(genCompany.trim());
+        // Reload list
+        const queryParams = new URLSearchParams();
+        queryParams.append('company', genCompany.trim());
+        const [qRes, statsRes] = await Promise.all([
+          api.get(`/questions?${queryParams.toString()}`),
+          api.get('/questions/stats'),
+        ]);
+        if (qRes.success) setQuestions(qRes.questions || []);
+        if (statsRes.success) setStats(statsRes.stats);
+      } else {
+        toast.error(res.message || 'Generation failed');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to generate questions');
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -182,7 +244,15 @@ export const CodingArena = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => handleOpenGenerateModal()}
+              leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+            >
+              Generate Questions (AI)
+            </Button>
             <Button
               variant="secondary"
               size="sm"
@@ -267,7 +337,7 @@ export const CodingArena = () => {
       {/* Quick Company Badges */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         <span className="text-xs font-bold text-slate-400 shrink-0">Company Filters:</span>
-        {COMPANIES.map((comp) => (
+        {Array.from(new Set([...COMPANIES, ...questions.flatMap((q) => q.companies || [])])).map((comp) => (
           <button
             key={comp}
             onClick={() => setSelectedCompany(comp)}
@@ -280,6 +350,13 @@ export const CodingArena = () => {
             {comp}
           </button>
         ))}
+        <button
+          onClick={() => handleOpenGenerateModal()}
+          className="px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all border border-dashed border-violet-500/40 text-violet-400 hover:text-white hover:border-violet-500 flex items-center gap-1.5 bg-violet-500/10"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>+ Generate for Drive</span>
+        </button>
       </div>
 
       {/* Search & Comprehensive Filters */}
@@ -355,15 +432,27 @@ export const CodingArena = () => {
           <SkeletonCard />
         </div>
       ) : questions.length === 0 ? (
-        <div className="glass-panel p-12 text-center rounded-3xl space-y-3">
+        <div className="glass-panel p-12 text-center rounded-3xl space-y-4">
           <Code2 className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-base font-bold text-white">No questions matched your filter criteria</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Try adjusting company, topic, or difficulty settings to explore the rest of the problem bank.
+          <h3 className="text-base font-bold text-white">No questions found for this selection</h3>
+          <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+            {selectedCompany !== 'All Companies'
+              ? `No coding questions are currently indexed for ${selectedCompany}. Use Gemini AI to instantly generate high-frequency interview questions for this drive!`
+              : 'Try adjusting your filters or use our Placement Intelligence engine to generate customized drive questions.'}
           </p>
-          <Button variant="secondary" size="sm" onClick={resetFilters}>
-            Clear All Filters
-          </Button>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Button variant="secondary" size="sm" onClick={resetFilters}>
+              Clear Filters
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => handleOpenGenerateModal(selectedCompany !== 'All Companies' ? selectedCompany : '')}
+              leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+            >
+              Generate Questions for {selectedCompany !== 'All Companies' ? selectedCompany : 'Target Drive'} (AI)
+            </Button>
+          </div>
         </div>
       ) : (
         <Card className="overflow-hidden">
@@ -472,6 +561,142 @@ export const CodingArena = () => {
             ))}
           </CardContent>
         </Card>
+      )}
+      {/* AI Question Generation Modal */}
+      {isGenerateModalOpen && (
+        <Modal
+          isOpen={isGenerateModalOpen}
+          onClose={() => !generating && setIsGenerateModalOpen(false)}
+          title="Generate Drive-Specific Interview Questions"
+          description="Use Google Gemini to generate verified LeetCode & GeeksforGeeks problems for upcoming recruitment drives."
+          footer={
+            <div className="flex items-center justify-end gap-3 w-full">
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={generating}
+                onClick={() => setIsGenerateModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                isLoading={generating}
+                onClick={handleGenerateQuestions}
+                leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+              >
+                {generating ? 'Generating Problems with AI...' : 'Generate Questions'}
+              </Button>
+            </div>
+          }
+        >
+          <form onSubmit={handleGenerateQuestions} className="space-y-4 text-left">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                Target Company / Drive Name *
+              </label>
+              <Input
+                placeholder="e.g. Google, Amazon, Uber, TCS, Infosys"
+                value={genCompany}
+                onChange={(e) => setGenCompany(e.target.value)}
+                required
+              />
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <span className="text-[11px] text-slate-400 self-center mr-1">Quick pick:</span>
+                {['Google', 'Amazon', 'Microsoft', 'Uber', 'Goldman Sachs', 'TCS', 'Infosys'].map((cp) => (
+                  <button
+                    type="button"
+                    key={cp}
+                    onClick={() => setGenCompany(cp)}
+                    className="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+                  >
+                    {cp}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                Target Role
+              </label>
+              <Input
+                placeholder="e.g. Software Development Engineer (SDE-1)"
+                value={genRole}
+                onChange={(e) => setGenRole(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                  Target Difficulty
+                </label>
+                <select
+                  value={genDifficulty}
+                  onChange={(e) => setGenDifficulty(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="All">Balanced Mix (Easy, Med, Hard)</option>
+                  <option value="Easy">Easy (Foundations)</option>
+                  <option value="Medium">Medium (Standard OA / Technical)</option>
+                  <option value="Hard">Hard (Tier-1 Advanced)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                  Number of Questions
+                </label>
+                <select
+                  value={genCount}
+                  onChange={(e) => setGenCount(Number(e.target.value))}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                >
+                  <option value={3}>3 Questions (Fast)</option>
+                  <option value={4}>4 Questions (Recommended)</option>
+                  <option value={5}>5 Questions</option>
+                  <option value={6}>6 Questions</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                Focus Algorithmic Topics
+              </label>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {[
+                  'Arrays & Strings',
+                  'Dynamic Programming',
+                  'Graphs',
+                  'Trees',
+                  'Heap / Priority Queue',
+                  'Linked List',
+                  'Recursion & Backtracking',
+                  'Trie',
+                ].map((topic) => {
+                  const isSelected = genTopics.includes(topic);
+                  return (
+                    <button
+                      type="button"
+                      key={topic}
+                      onClick={() => toggleGenTopic(topic)}
+                      className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
+                        isSelected
+                          ? 'bg-violet-600 text-white border-violet-500 font-semibold'
+                          : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      {topic}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </form>
+        </Modal>
       )}
     </div>
   );
