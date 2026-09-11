@@ -48,7 +48,6 @@ const getDefaultResumeData = (user) => ({
     github: user?.github || '',
   },
 });
-});
 
 /**
  * @desc    Get current student's saved resume
